@@ -44,16 +44,26 @@
     this.socket.send('read', fp, cb);
   };
 
-  function OTRFriend(socket){
-    this.socket = socket;
-  }
+  var OTRFriend = Backbone.Model.extend({
+    default: {
+      socket: null,
+      host: '',
+      port: '',
+      key: '',
+      fp: ''
+    },
 
-  OTRFriend.prototype.connect = function(cb) {
-    this.socket.connect(cb);
-  };
-  OTRFriend.prototype.send = function(topic, msg, cb) {
-    this.socket.send(topic, msg, cb);
-  };
+    connect: function(cb) {
+      this.get('socket').connect(function(ost_socket) {
+        this.set('key', ost_socket.pipeline[3].buddy.their_priv_pk);
+        cb();
+      }.bind(this));
+    },
+
+    send: function(topic, msg, cb) {
+      this.get('socket').send(topic, msg, cb);
+    }
+  });
 
   var OTRUser = Backbone.Model.extend({
     defaults: {
@@ -82,7 +92,6 @@
     _onconnection: function(otr_socket) {
       // received connection, choose what to do with it - new friend or existing friend?
       // We have to wait for OTR to finish its thing
-      //TODO: use OTRFriend class
       //TODO: find a less hacky way to access the buddy object
       var buddy = otr_socket.pipeline[3].buddy;
 
@@ -90,12 +99,13 @@
         var fp = buddy.their_priv_pk.fingerprint();
         if(!this.get('friends')[this.friends_by_fp[fp]]){
           var id = this.get('friends').length;
-          this.get('friends').push({
+          this.get('friends').push(new OTRFriend({
             host: otr_socket.host,
             port: otr_socket.port,
-            key: otr_socket.myKey,
+            key: buddy.their_priv_pk,
+            fp: fp,
             socket: otr_socket
-          });
+          }));
           this.friends_by_fp[fp] = id;
           console.log('new friend', this.get('friends')[id]);
           this.trigger('new_friend', this.get('friends')[id]);
@@ -139,12 +149,13 @@
       var id = this.get('friends').length;
       var myKey = this.get('myKey');
       var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(myKey), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
-      this.get('friends').push({
+      
+      this.get('friends').push(new OTRFriend({
+        socket: new Socket(host, port, pipeline),
         host: host,
         port: port,
-        fp: fp,
-        user: new OTRFriend(new Socket(host, port, pipeline))
-      });
+        fp: fp
+      }));
       this.friends_by_fp[fp] = id;
       if(typeof cb == 'function') cb(fp);
     }

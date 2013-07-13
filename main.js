@@ -38,11 +38,11 @@ tracker.connect(function(){
 
         user1.on('new_friend', function(friend){
           console.log(friend, 'new friend');
-          friend.socket.on('msg', function(){console.log(arguments);});
+          friend.get('socket').on('msg', function(){console.log(arguments);});
         });
         user1.on('connection', function(friend){
           console.log(friend, 'connection');
-          friend.socket.on('msg', function(){console.log(arguments);});
+          friend.get('socket').on('msg', function(){console.log(arguments);});
         });
 
         var user2 = new OTRUser( {
@@ -54,8 +54,8 @@ tracker.connect(function(){
         user2.findAndAddFriend(keyA.fingerprint(), function(){
           console.log(user1);
           console.log(user2);
-          user2.get('friends')[user2.friends_by_fp[keyA.fingerprint()]].user.connect(function(){
-            user2.get('friends')[user2.friends_by_fp[keyA.fingerprint()]].user.send('msg', 'hello');
+          user2.get('friends')[user2.friends_by_fp[keyA.fingerprint()]].get('socket').connect(function(){
+            user2.get('friends')[user2.friends_by_fp[keyA.fingerprint()]].get('socket').send('msg', 'hello');
           });
         });
       });
