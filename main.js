@@ -19,7 +19,12 @@ function getOrGenKey(name, cb){
 tracker.connect(function(){
   getOrGenKey('dsaKeyUserA', function(keyA){
     getOrGenKey('dsaKeyUserB', function(keyB){
-      var user1 = new OTRUser('127.0.0.1', 34562, keyA, tracker);
+      var user1 = new OTRUser({
+          host: '127.0.0.1',
+          port: 34562,
+          myKey: keyA,
+          tracker: tracker
+      });
 
       user1.listen(function(err){
         if (err) {
@@ -40,12 +45,17 @@ tracker.connect(function(){
           friend.socket.on('msg', function(){console.log(arguments);});
         });
 
-        var user2 = new OTRUser('127.0.0.1', 34563, keyB, tracker);
+        var user2 = new OTRUser( {
+            host: '127.0.0.1',
+            port: 34563,
+            myKey: keyB,
+            tracker: tracker
+        });
         user2.findAndAddFriend(keyA.fingerprint(), function(){
           console.log(user1);
           console.log(user2);
-          user2.friends[user2.friends_by_fp[keyA.fingerprint()]].user.connect(function(){
-            user2.friends[user2.friends_by_fp[keyA.fingerprint()]].user.send('msg', 'hello');
+          user2.get('friends')[user2.friends_by_fp[keyA.fingerprint()]].user.connect(function(){
+            user2.get('friends')[user2.friends_by_fp[keyA.fingerprint()]].user.send('msg', 'hello');
           });
         });
       });

@@ -55,88 +55,100 @@
     this.socket.send(topic, msg, cb);
   };
 
-  function OTRUser(host, port, myKey, tracker) {
-    if (!myKey) this.myKey = new DSA();
-    else if (typeof myKey === 'string') this.myKey = DSA.parsePrivate(myKey);
-    else this.myKey = myKey;
-    var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(myKey), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
-    this.server = new SocketServer(host, port, pipeline);
-    this.server.on('connection', this._onconnection.bind(this));
-    this.tracker = tracker;
-    this.friends = [];
-    this.friends_by_fp = {};
-  }
+  var OTRUser = Backbone.Model.extend({
+    defaults: {
+      host: '',
+      port: '',
+      myKey: '',
+      tracker: '',
+      friends: [],
+      connected: false // Can listen on changes to this
+    },
 
-  util.inherits(OTRUser, EventEmitter);
+    initialize: function() {
+      if (!this.has('myKey') || this.get('myKey') === '') this.set('myKey', new DSA());
+      else if (typeof this.get('myKey') === 'string') this.get('myKey') = DSA.parsePrivate(this.get('myKey'));
 
-  OTRUser.prototype._onconnection = function(otr_socket) {
-    // received connection, choose what to do with it - new friend or existing friend?
-    // We have to wait for OTR to finish its thing
-    //TODO: use OTRFriend class
-    //TODO: find a less hacky way to access the buddy object
-    var buddy = otr_socket.pipeline[3].buddy;
+      var myKey = this.get('myKey');
 
-    var theRest = function(){
-      var fp = buddy.their_priv_pk.fingerprint();
-      if(!this.friends[this.friends_by_fp[fp]]){
-        var id = this.friends.length;
-        this.friends.push({
-          host: otr_socket.host,
-          port: otr_socket.port,
-          key: otr_socket.myKey,
-          socket: otr_socket
-        });
-        this.friends_by_fp[fp] = id;
-        console.log('new friend', this.friends[id]);
-        this.emit('new_friend', this.friends[id]);
-      } else {
-        console.log('old friend', this.friends[this.friends_by_fp[fp]]);
-        this.friends[this.friends_by_fp[fp]].socket = otr_socket;
-        this.emit('connection', this.friends[this.friends_by_fp[fp]]);
-      }
-    }.bind(this);
+      var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(myKey), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
+      this.server = new SocketServer(this.get('host'), this.get('port'), pipeline);
+      this.server.on('connection', this._onconnection.bind(this));
+      this.friends_by_fp = {};
+    },
 
-    if(buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED){
-      var cb = function (state) {
-        if(state === OTR.CONST.STATUS_AKE_SUCCESS){
-          theRest();
-          buddy.off('status', cb);
+    //util.inherits(OTRUser, EventEmitter);
+
+    _onconnection: function(otr_socket) {
+      // received connection, choose what to do with it - new friend or existing friend?
+      // We have to wait for OTR to finish its thing
+      //TODO: use OTRFriend class
+      //TODO: find a less hacky way to access the buddy object
+      var buddy = otr_socket.pipeline[3].buddy;
+
+      var theRest = function(){
+        var fp = buddy.their_priv_pk.fingerprint();
+        if(!this.get('friends')[this.friends_by_fp[fp]]){
+          var id = this.get('friends').length;
+          this.get('friends').push({
+            host: otr_socket.host,
+            port: otr_socket.port,
+            key: otr_socket.myKey,
+            socket: otr_socket
+          });
+          this.friends_by_fp[fp] = id;
+          console.log('new friend', this.get('friends')[id]);
+          this.trigger('new_friend', this.get('friends')[id]);
+        } else {
+          console.log('old friend', this.get('friends')[this.friends_by_fp[fp]]);
+          this.get('friends')[this.friends_by_fp[fp]].socket = otr_socket;
+          this.trigger('connection', this.get('friends')[this.friends_by_fp[fp]]);
         }
-      };
-      buddy.on('status', cb);
-    } else {
-      theRest();
-    }
-  };
+        this.set('connected', true);
+      }.bind(this);
 
-  OTRUser.prototype.listen = function(cb) {
-    this.server.listen(function(res){
-      console.log('announcing');
-      tracker.announce(this.server.ip, this.server.port, this.myKey.fingerprint(), function(res){
-        if(typeof cb == 'function') cb();
+      if(buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED){
+        var cb = function (state) {
+          if(state === OTR.CONST.STATUS_AKE_SUCCESS){
+            theRest();
+            buddy.off('status', cb);
+          }
+        };
+        buddy.on('status', cb);
+      } else {
+        theRest();
+      }
+    },
+
+    listen: function(cb) {
+      this.server.listen(function(res){
+        console.log('announcing');
+        this.get('tracker').announce(this.server.ip, this.server.port, this.get('myKey').fingerprint(), function(res){
+          if(typeof cb == 'function') cb();
+        });
+      }.bind(this));
+    },
+
+    findAndAddFriend: function(fp, cb) {
+      this.get('tracker').findUser(fp, function(res){
+        this.addFriend(res.ip, res.port, res.fp, cb);
+      }.bind(this));
+    },
+
+    addFriend: function(host, port, fp, cb) {
+      var id = this.get('friends').length;
+      var myKey = this.get('myKey');
+      var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(myKey), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
+      this.get('friends').push({
+        host: host,
+        port: port,
+        fp: fp,
+        user: new OTRFriend(new Socket(host, port, pipeline))
       });
-    }.bind(this));
-  };
-
-  OTRUser.prototype.findAndAddFriend = function(fp, cb) {
-    tracker.findUser(fp, function(res){
-      this.addFriend(res.ip, res.port, res.fp, cb);
-    }.bind(this));
-  };
-
-  OTRUser.prototype.addFriend = function(host, port, fp, cb) {
-    var id = this.friends.length;
-    var myKey = this.myKey;
-    var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(myKey), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
-    this.friends.push({
-      host: host,
-      port: port,
-      fp: fp,
-      user: new OTRFriend(new Socket(host, port, pipeline))
-    });
-    this.friends_by_fp[fp] = id;
-    if(typeof cb == 'function') cb(fp);
-  };
+      this.friends_by_fp[fp] = id;
+      if(typeof cb == 'function') cb(fp);
+    }
+  });
 
   exports.TrackerConnection = TrackerConnection;
   exports.OTRUser = OTRUser;
