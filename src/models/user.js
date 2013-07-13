@@ -216,9 +216,16 @@
       friend.socket.send('profile', JSON.stringify(this.get('profile')), null);
     },
 
-    sendMessage: function(friend, msg) {
+    sendPrivateMessage: function(friend, msg) {
       friend.socket.send('msg', JSON.stringify(msg), null);
+    },
+
+    broadcastMessage: function(msg) {
+      this.friends.map(function(friend) {
+        this.sendPrivateMessage(friend, msg);
+      });
     }
+
   });
 
   exports.TrackerConnection = TrackerConnection;
