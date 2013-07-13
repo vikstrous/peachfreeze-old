@@ -58,7 +58,7 @@ $(function() {
 			}
 	});
 	
-	$('#peachfreeze #post-button').click(
+	//$('#peachfreeze #post-button').click(
 		// function(){
 		// 	if( $('#peachfreeze #post-button').text() == "Post A Broadcast"){
 		// 		$('#peachfreeze #post-button').html("Post Broadcast");
@@ -81,6 +81,6 @@ $(function() {
 		// 		$('#peachfreeze #contacts-column .PopupContainer').css("display", "none");
 		// 		updateBubbleAnimation();
 		// 	}
-	});
+	//});
 
 });
