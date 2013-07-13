@@ -7,9 +7,8 @@
 
     render: function() {
       console.log('render messages', this.collection);
-      var $broadcast = $('#broadcast-column').empty();
-      var $broadcast_tpl = $($('#broadcasts-tpl').html());
-      var $container = $broadcast_tpl.find('#broadcast-container');
+      var $container = $('#broadcast-container');
+      $container.empty();
 
       var models = this.collection.models;
       for(var c in models){
@@ -20,7 +19,6 @@
         $broadcast_ele_tpl.find('.Image').attr('src', msg.get('image'));
         $container.append($broadcast_ele_tpl);
       }
-      $broadcast.append($broadcast_tpl);
     }
   });
 
