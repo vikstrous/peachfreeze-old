@@ -16,11 +16,13 @@ server.listen(function(err){
 });
 server.on('connection', function(socket) {
   socket.on('announce', function(data, cb){
+	 data = data.toLowerCase();
     console.log('announced', data);
     state.users[data.fp] = {ip:data.ip, port:data.port};
     if(typeof cb === 'function') cb();
   });
   socket.on('read', function(data, cb){
+	data = data.toLowerCase();
     console.log('reading', data);
     if(state.users[data]){
       cb({fp: data, ip: state.users[data].ip, port: state.users[data].port});
