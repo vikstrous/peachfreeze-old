@@ -1,0 +1,3 @@
+[submodule "lib/otrsocket.js"]
+	path = lib/otrsocket.js
+	url = git@github.com:/vikstrous/otrsocket.js.git
