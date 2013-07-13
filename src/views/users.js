@@ -118,6 +118,19 @@
         $('#profile-description').empty().html('<textarea name="edit_description" id="edit_description_input"></textarea>').find('textarea').val(profile.description);
         $('#profile-button').text('Save Profile');
       }
+      
+      $('#peachfreeze .ContactsCheckBoxContainer').hover(
+        function () {
+          $(this).stop().animate({
+          backgroundColor: "#6C6",
+          },200);
+        },
+        function () {
+          $(this).stop().animate({
+          backgroundColor: "#F63",
+          },200);
+        }
+      );
     }
   });
 

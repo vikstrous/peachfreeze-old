@@ -49,7 +49,7 @@
         array.push(JSON.stringify(model));
         chrome.storage.local.set(singleton(key_name, array), function() {
           if (options.success) {
-            options.success(model, null, options);
+            options.success();
           }
         });
       } else if (method == 'read') {

@@ -7,7 +7,7 @@
       message: '',
       image: '',
       recepients: '',
-      date: new Date()
+      date: (new Date()).toLocaleString()
     },
 
     initialize: function() {

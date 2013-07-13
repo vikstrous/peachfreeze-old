@@ -228,6 +228,7 @@
     },
 
     broadcastMessage: function(msg) {
+      msg.sender = this.get('profile').name;
       this.friends.map(function(friend) {
         this.sendPrivateMessage(friend, msg);
       }.bind(this));
