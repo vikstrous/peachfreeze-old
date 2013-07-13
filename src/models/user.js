@@ -44,13 +44,21 @@
     this.socket.send('read', fp, cb);
   };
 
+  function Profile(name, image) {
+    this.name = name;
+    this.image = image;
+  }
+
   var OTRFriend = Backbone.Model.extend({
+    idAttribute: 'fp',
+
     default: {
       socket: null,
       host: '',
       port: '',
       key: '',
-      fp: ''
+      fp: '',
+      profile: null
     },
 
     connect: function(cb) {
@@ -66,7 +74,7 @@
   });
 
   var OTRFriends = Backbone.Collection.extend({
-    model: OTRFriend
+    model: OTRFriend,
   });
 
   var OTRUser = Backbone.Model.extend({
@@ -75,8 +83,8 @@
       port: '',
       myKey: '',
       tracker: '',
-      friends: [],
-      connected: false // Can listen on changes to this
+      connected: false, // Can listen on changes to this
+      friends: new OTRFriends()
     },
 
     initialize: function() {
@@ -88,7 +96,6 @@
       var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(myKey), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
       this.server = new SocketServer(this.get('host'), this.get('port'), pipeline);
       this.server.on('connection', this._onconnection.bind(this));
-      this.friends_by_fp = {};
     },
 
     //util.inherits(OTRUser, EventEmitter);
@@ -101,8 +108,7 @@
 
       var theRest = function(){
         var fp = buddy.their_priv_pk.fingerprint();
-        if(!this.get('friends')[this.friends_by_fp[fp]]){
-          var id = this.get('friends').length;
+        if(!this.get('friends').get(fp)){
           this.get('friends').push(new OTRFriend({
             host: otr_socket.host,
             port: otr_socket.port,
@@ -110,14 +116,11 @@
             fp: fp,
             socket: otr_socket
           }));
-          this.friends_by_fp[fp] = id;
-          console.log('new friend', this.get('friends')[id]);
-          this.trigger('new_friend', this.get('friends')[id]);
         } else {
-          console.log('old friend', this.get('friends')[this.friends_by_fp[fp]]);
-          this.get('friends')[this.friends_by_fp[fp]].socket = otr_socket;
-          this.trigger('connection', this.get('friends')[this.friends_by_fp[fp]]);
+          this.get('friends').get(fp).set('socket', otr_socket);
         }
+        console.log('old friend', this.get('friends').get(fp));
+        this.trigger('connection', this.get('friends').get(fp));
         this.set('connected', true);
       }.bind(this);
 
@@ -150,7 +153,7 @@
     },
 
     addFriend: function(host, port, fp, cb) {
-      var id = this.get('friends').length;
+      var id = this.get('friends').size();
       var myKey = this.get('myKey');
       var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(myKey), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
       this.get('friends').push(new OTRFriend({
@@ -159,7 +162,6 @@
         port: port,
         fp: fp
       }));
-      this.friends_by_fp[fp] = id;
       if(typeof cb == 'function') cb(fp);
     }
   });

@@ -54,8 +54,8 @@ tracker.connect(function(){
         user2.findAndAddFriend(keyA.fingerprint(), function(){
           console.log(user1);
           console.log(user2);
-          user2.get('friends')[user2.friends_by_fp[keyA.fingerprint()]].get('socket').connect(function(){
-            user2.get('friends')[user2.friends_by_fp[keyA.fingerprint()]].get('socket').send('msg', 'hello');
+          user2.get('friends').get(keyA.fingerprint()).get('socket').connect(function(){
+            user2.get('friends').get(keyA.fingerprint()).get('socket').send('msg', 'hello');
           });
         });
       });
