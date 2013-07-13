@@ -396,10 +396,7 @@ h1
 
 #peachfreeze .ContactsPerson .BubbleContainer
 {
-	display:inline-block;
-	margin-right:0;
-	width: 200px;
-	float:left;
+	width: 230px;
 }
 
 #peachfreeze .ContactsPerson .ContactsCheckBoxContainer
