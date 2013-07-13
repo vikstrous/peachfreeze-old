@@ -17,12 +17,14 @@ server.listen(function(err){
 server.on('connection', function(socket) {
   socket.on('announce', function(data, cb){
 	 data.fp = data.fp.toLowerCase();
+	 data.fp.replace(/\s+/g, ' ');
     console.log('announced', data);
     state.users[data.fp] = {ip:data.ip, port:data.port};
     if(typeof cb === 'function') cb();
   });
   socket.on('read', function(data, cb){
 	data = data.toLowerCase();
+	data.replace(/\s+/g, ' ');
     console.log('reading', data);
     if(state.users[data]){
       cb({fp: data, ip: state.users[data].ip, port: state.users[data].port});
