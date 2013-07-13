@@ -224,7 +224,7 @@
     broadcastMessage: function(msg) {
       this.friends.map(function(friend) {
         this.sendPrivateMessage(friend, msg);
-      });
+      }.bind(this));
 
       // This will add it to the view
       this.messages.add(msg);

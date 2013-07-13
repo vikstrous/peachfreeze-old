@@ -80,7 +80,7 @@ function setupUser(id, port, callback) {
     },
     function startTheServer(model) {
       model.setTracker(tracker); // Important
-      model.startServer(key);
+      model.startServer();
       callback(model);
     }
   );
@@ -132,6 +132,9 @@ function setupUI(user) {
   var mc = new Messages();
   mc.reset([{sender:'title', message: 'text'}, {sender:'ti2tle', message: 'tex2t'}]);
   */
+
+  var uv = new UsersView({collection: user.friends, user: user});
+  uv.render();
 
   var mc = user.messages;
 

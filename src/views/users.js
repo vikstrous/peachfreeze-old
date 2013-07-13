@@ -1,14 +1,55 @@
 (function(exports) {
   var UsersView = Backbone.View.extend({
 
-    tagName: 'ul',
+    initialize: function(opts) {
+      this.listenTo(this.collection, "add change", this.render);
+      this.user = opts.user;
 
-    initialize: function() {
-      this.listenTo(this.collection, 'add change', this.render);
+      this.addingContact = false;
+      $('#contacts-button').click(this.contacts_click.bind(this));
+    },
+
+    contacts_click: function(){
+      this.addingContact = !this.addingContact;
+      if(!this.addingContact){
+        $('#contacts-button').html("Add A Contact");
+      } else {
+        this.user.findAndAddFriend($('#new-contact-input').val());
+        $('#contacts-button').html("Submit");
+        $('#contacts-container').animate({
+          marginTop: "62px"
+        }, 500);
+        $('#contacts-column .PopupContainer').fadeIn("slow");
+      }
     },
 
     render: function() {
       console.log('render users', this.collection);
+      if(this.addingContact === false){
+        $('#contacts-column .PopupContainer').fadeOut("slow");
+        $('#contacts-button').html("Add A Contact");
+      } else {
+        $('#contacts-button').html("Submit");
+      }
+
+      var $container = $('#contacts-container');
+      $container.empty();
+      var models = this.collection.models;
+
+      for(var c in models){
+        var user = models[c];
+        var $contact_ele_tpl = $($('#contact-tpl').html());
+        console.log(user);
+        var profile = user.get('profile');
+        if(profile){
+          $contact_ele_tpl.find('.Name').text(profile.name);
+          $contact_ele_tpl.find('.Image').attr('src', profile.image);
+        } else {
+          $contact_ele_tpl.find('.Name').text('Anonymous');
+        }
+        $container.append($contact_ele_tpl);
+      }
+      $container.css('margin-top', '0px');
     }
   });
 
