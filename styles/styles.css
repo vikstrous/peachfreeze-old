@@ -3,6 +3,14 @@ body
 	background-color: #FC6;
 }
 
+input
+{
+	padding: 0;
+	margin:0;
+		background-color:#FF9;
+		color: #F60;
+}
+
 div,p,h1,h2,h3
 {
 	padding: 0;
@@ -45,6 +53,7 @@ div,p,h1,h2,h3
 
 #peachfreeze #profile-column
 {
+	position: relative;
 	margin-left: 10px;
 	width: 435px;
 	height: 500px;
@@ -54,6 +63,7 @@ div,p,h1,h2,h3
 
 #peachfreeze #broadcast-column
 {
+	position: relative;
 	width: 420px;
 	height: 500px;
 	margin-right: 40px;
@@ -62,6 +72,7 @@ div,p,h1,h2,h3
 
 #peachfreeze #contacts-column
 {
+	position: relative;
 	width: 250px;
 	height: 500px;
 	float: left;
@@ -294,4 +305,33 @@ div,p,h1,h2,h3
 	cursor: pointer;
 	display:inline-block;
 		vertical-align: top;
+}
+
+#peachfreeze .PopupContainer
+{
+	position:absolute;
+	padding: 10px;
+	background-color:#F93;
+	display: block;
+	border-radius: 1px;
+}
+
+#peachfreeze #contacts-column .PopupContainer
+{
+	width: 230px;
+	height: 40px;
+	display:none;
+}
+
+#peachfreeze #contacts-column .PopupContainer p
+{
+	font-size: 8px;
+	color: white;
+	font-family: monospace;
+}
+
+#peachfreeze #contacts-column .PopupContainer input
+{
+	margin-top: 5px;
+	width: 220px;
 }
