@@ -1,5 +1,6 @@
 $(function() {
 	$('.Text').dotdotdot();
+	$('.Epithet').dotdotdot();
 	
 	$("#peachfreeze .BubbleContainer").hover(
 	  function () {
@@ -14,5 +15,9 @@ $(function() {
 	  }
 	);
 
+	var fingerPrint = $("#peachfreeze .FingerPrint").text().split(" ");
+	for(var i=0;i<fingerPrint.length;i++){
+		$("#finger-print").append("<div style='background-color: #" + fingerPrint[i].substring(0,6) + "'></div>")
+	}
 
 });

@@ -3,6 +3,7 @@ div,p,h1,h2,h3
 	padding: 0;
 	margin: 0;
 	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
 }
 
 #peachfreeze
@@ -28,7 +29,8 @@ div,p,h1,h2,h3
 
 #peachfreeze #profile-column
 {
-	width: 400px;
+	margin-left: 10px;
+	width: 435px;
 	height: 500px;
 	margin-right: 40px;
 	float: left;
@@ -124,8 +126,87 @@ float: left;
 	vertical-align: middle;
 }
 
-#peacefreeze .ProfileImage
+#peachfreeze .ProfileImage
 {
-	width: 100px;
-	height: 100px;
+	width: 150px;
+	height: 150px;
+	float:left;
+	margin-right: 15px;
+}
+
+#peachfreeze  #profile-container
+{
+	padding: 20px;
+	background-color:#F93;
+	color: white !important;
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif !important;
+	font-weight: normal !important;
+	font-size: 14px;
+}
+
+#peachfreeze .ProfileTextArea
+{
+	float:left;
+	width: 230px;
+}
+
+#peachfreeze .ProfileTextArea .Name
+{
+	font-weight: normal !important;
+	width: 230px;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space: nowrap;
+	margin-bottom: 7px;
+}
+
+#peachfreeze .ProfileTextArea .FingerPrint
+{
+	color:#6FC;
+	font-size: 8px;
+	font-family:"Lucida Sans Unicode", "Lucida Grande", monospace
+}
+#peachfreeze .ProfileTextArea #finger-print
+{
+	padding:0;
+	margin:0;
+	margin-top: 2px;
+	height: 5px;
+}
+#peachfreeze .ProfileTextArea #finger-print div
+{
+	width:43px;
+	height: 5px;
+	display: inline-block;
+	margin-left: 3px;
+	vertical-align: top;
+}
+
+#peachfreeze .ProfileTextArea #finger-print div:first-child
+{
+	margin-left: 0;
+}
+
+#peachfreeze .ProfileTextArea .Epithet
+{
+	margin-top: 9px;
+	font-size: 12px;
+	width: 230px;
+	line-height: 17px;
+	height: 90px;
+}
+
+#peachfreeze #profile-description
+{
+	padding: 20px;
+	background-color:#F93;
+	line-height: 15px;
+	padding:0;
+	margin:0;
+	color: white !important;
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif !important;
+	font-weight: normal !important;
+	font-size: 12px;
+		margin-top: 15px;
+
 }
