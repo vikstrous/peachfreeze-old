@@ -6,7 +6,6 @@
     },
 
     render: function() {
-      console.log('render messages', this.collection);
       var $container = $('#broadcast-container');
       $container.empty();
 
