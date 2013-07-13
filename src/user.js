@@ -67,7 +67,7 @@
 
     initialize: function() {
       if (!this.has('myKey') || this.get('myKey') === '') this.set('myKey', new DSA());
-      else if (typeof this.get('myKey') === 'string') this.get('myKey') = DSA.parsePrivate(this.get('myKey'));
+      else if (typeof this.get('myKey') === 'string') this.set('myKey', DSA.parsePrivate(this.get('myKey')));
 
       var myKey = this.get('myKey');
 
