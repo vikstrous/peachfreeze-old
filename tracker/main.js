@@ -1,6 +1,6 @@
 var config = {
   ip: '127.0.0.1',
-  port: 1333
+  port: 1337
 };
 
 var state = {

@@ -113,7 +113,7 @@
     this.server.listen(function(res){
       console.log('announcing');
       tracker.announce(this.server.ip, this.server.port, this.myKey.fingerprint(), function(res){
-        if(typeof cb == 'function') cb(res);
+        if(typeof cb == 'function') cb();
       });
     }.bind(this));
   };

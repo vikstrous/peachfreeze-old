@@ -1,13 +1,13 @@
 {
-  "name": "Matchmaker",
-  "description": "Helps keep track of where users are found in a decentralized social network.",
+  "name": "PeachFreeze Tracker",
+  "description": "Used to help PeachFreeze clients find each other",
   "version": "0.1",
   "app": {
     "background": {
       "scripts": ["background.js"]
     }
   },
-  "permissions": ["storage", {
+  "permissions": ["storage",{
     "socket": [
       "tcp-connect", "tcp-listen"
     ]
