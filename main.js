@@ -1,6 +1,6 @@
 var TESTING = false;
 
-var tracker = new TrackerConnection('10.16.23.10', 1337);
+var tracker = new TrackerConnection('10.16.23.57', 1337);
 var global_users = [];
 
 var MY_ID = 1;
