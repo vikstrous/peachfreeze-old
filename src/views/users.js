@@ -59,7 +59,7 @@
       this.listenTo(this.model, 'add change', this.render);
       this.edit_mode = false;
       $('#profile-button').click(this.edit_click.bind(this));
-      $('#profile-container .ProfileImage').click(this.upload_click.bind(this));
+      $('#profile-info-edit').click(this.upload_click.bind(this));
     },
 
     upload_click: function(){
@@ -79,11 +79,13 @@
         prof.epithet = $('#profile-container .Epithet textarea').val();
         prof.description = $('#profile-description textarea').val();
         prof.image = this.preview || prof.image;
+		 $('#profile-info-edit').css("display", "none");
         this.model.set('profile', prof);
         this.model.trigger('change:profile');
         this.model.trigger('change');
         this.model.save();
       } else {
+		$('#profile-info-edit').css("display", "block");
         this.model.trigger('change:profile');
         this.model.trigger('change');
       }
