@@ -1,5 +1,10 @@
 var tracker = new TrackerConnection('127.0.0.1', 1337);
 
+var mc = new Messages();
+mc.reset([{sender:'title', message: 'text'}, {sender:'ti2tle', message: 'tex2t'}]);
+var mv = new MessagesView({collection:mc});
+mv.render();
+
 document.querySelector('#choose_file').addEventListener('click', function(e) {
   uploadProfileImage();
 });

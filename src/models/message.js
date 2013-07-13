@@ -4,6 +4,7 @@
       sender: '',
       message: '',
       image: '',
+      recepients: '',
       date: new Date()
     },
 
