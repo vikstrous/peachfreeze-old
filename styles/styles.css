@@ -1,3 +1,8 @@
+body
+{
+	background-color: #FC6;
+}
+
 div,p,h1,h2,h3
 {
 	padding: 0;
@@ -10,7 +15,6 @@ div,p,h1,h2,h3
 {
 	width: 1200px;
 	height: 700px;
-	background-color: #FC6;
 	padding: 10px 15px 10px 15px;
 }
 
@@ -157,6 +161,15 @@ div,p,h1,h2,h3
 	font-size: 14px;
 }
 
+#peachfreeze  #profile-container textarea
+{
+	resize: none;
+	background-color:#FF9;
+	overflow:hidden;
+	border:0;
+	color:#F60;
+}
+
 #peachfreeze .ProfileTextArea
 {
 	float:left;
@@ -173,10 +186,40 @@ div,p,h1,h2,h3
 	margin-bottom: 7px;
 }
 
+#peachfreeze .ProfileTextArea .Name input
+{
+	margin: 0;
+	padding: 0;
+	height: 19px;
+	width: 230px;
+	background-color:#FF9;
+	padding-left: 10px;
+	color:#F60;
+	border:0;
+}
+
+#peachfreeze .ProfileTextArea .Epithet textarea
+{
+	padding: 5px;
+	width: 220px;
+	height: 80px;
+}
+
+#peachfreeze #profile-description textarea
+{
+	padding: 5px;
+	width: 385px;
+	height: 140px;
+}
+
 #peachfreeze .ProfileTextArea .FingerPrint
 {
 	color:#6FC;
 	font-size: 8px;
+	-webkit-user-select: all;  /* Chrome all / Safari all */
+	
+	/* No support for these yet, use at own risk */
+	user-select: all; 
 	font-family:"Lucida Sans Unicode", "Lucida Grande", monospace
 }
 #peachfreeze .ProfileTextArea #finger-print
