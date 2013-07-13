@@ -34,6 +34,7 @@
     if (key_suffix) {
       key_name = key_name + key_suffix;
     }
+    console.log(key_name, 'key_name');
 
     chrome.storage.local.get(singleton(key_name, []), function(array) {
       array = array[key_name];
@@ -55,18 +56,16 @@
         if (options.success) {
           var models = _.map(array, function (m) {
             return JSON.parse(m);
-            //return new classNameMap[key_name](m);
           });
           if (single) {
             if (models.length > 0) {
-              options.success(models[0], null, options);
+              options.success(models[0]);
             } else {
               options.error_msg = 'Could not fetch single model';
               options.error(model, null, options);
             }
           } else {
-            model.models = models; // Update collection
-            options.success(model, null, options);
+            options.success(models);
           }
         }
       } else if (method == 'update') {
@@ -80,13 +79,13 @@
         }
         if (found) {
           chrome.storage.local.set(singleton(key_name, array), function() {
-            success(model, null, options);
+            options.success();
           });
         } else {
           array.push(JSON.stringify(model));
           chrome.storage.local.set(singleton(key_name, array), function() {
             if (options.success) {
-              options.success(model, null, options);
+              options.success();
             }
         });
         }
@@ -101,7 +100,7 @@
         }
         if (found) {
           chrome.storage.local.set(singleton(key_name, array), function() {
-            options.success(model, null, options);
+            options.success();
           });
         } else {
           options.error_msg = 'Model not found for deletion';

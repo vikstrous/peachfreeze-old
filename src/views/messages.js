@@ -10,6 +10,7 @@
       $container.empty();
 
       var models = this.collection.models;
+      console.log(models, 'THIS');
       for(var c in models){
         var msg = models[c];
         var $broadcast_ele_tpl = $($('#broadcast-tpl').html());
