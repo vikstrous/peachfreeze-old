@@ -2,6 +2,21 @@ $(function() {
 	$('.Text').dotdotdot();
 	$('.Epithet').dotdotdot();
 	
+	var fadeInEverything = function(){
+		$("#profile-column").hide();
+		$("#broadcast-column").hide();
+		$("#contacts-column").hide();
+		$("#profile-column").fadeIn("slow",
+			function(){
+				$("#broadcast-column").fadeIn("slow",
+					function(){
+						$("#contacts-column").fadeIn("slow");
+					})
+			});
+	}
+	
+	fadeInEverything();
+	
 	var updateBubbleAnimation = function(){
 		$("#peachfreeze .BubbleContainer").hover(
 		  function () {
