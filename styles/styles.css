@@ -3,12 +3,13 @@ body
 	background-color: #FC6;
 }
 
-input
+input,textarea
 {
 	padding: 0;
 	margin:0;
 		background-color:#FF9;
 		color: #F60;
+		resize:none;
 }
 
 div,p,h1,h2,h3
@@ -332,4 +333,18 @@ div,p,h1,h2,h3
 {
 	margin-top: 5px;
 	width: 220px;
+}
+
+#peachfreeze #broadcast-column .PopupContainer
+{
+	width: 400px;
+	height: 113px;
+	display:none;
+}
+
+#peachfreeze #broadcast-column .PopupContainer textarea
+{
+	width: 380px;
+	height: 93px;
+	padding: 10px;
 }
