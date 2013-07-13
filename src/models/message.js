@@ -1,14 +1,18 @@
 (function(exports) {
-    var Message = Backbone.Model.extend({
-        defaults: {
-            sender: '',
-            message: '',
-            image: ''
-        },
+  var Message = Backbone.Model.extend({
+    defaults: {
+      sender: '',
+      message: '',
+      image: ''
+    },
 
-        initialize: function() {
-        }
-    });
+    initialize: function() {
+    }
+  });
 
-    exports.Message = Message;
+  Backbone.Collection.extend({
+    model: Message
+  });
+
+  exports.Message = Message;
 })(window);
