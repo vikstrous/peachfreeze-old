@@ -2,9 +2,9 @@
   "name": "PeachFreeze: a P2P Social Network Client",
   "description": "Uses OTR to provide secure social network functionality in a decentralized network.",
   "version": "0.1",
-  "app": {
+"app": {
     "background": {
-      "scripts": ["background.js"]
+      "scripts": ["scripts/background.js"]
     }
   },
   "permissions": ["storage",{

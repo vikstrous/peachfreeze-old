@@ -1,0 +1,131 @@
+div,p,h1,h2,h3
+{
+	padding: 0;
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#peachfreeze
+{
+	width: 1200px;
+	height: 700px;
+	background-color: #FC6;
+	padding: 10px 15px 10px 15px;
+}
+
+#peachfreeze h1
+{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	font-size: 24px;
+	font-style:normal;
+	padding:0; margin:0;
+	margin-left: 10px;
+	margin-top: 10px;
+	color: #F90;
+	margin-bottom: 5px;
+	margin-left: 5px;
+}
+
+#peachfreeze #profile-column
+{
+	width: 400px;
+	height: 500px;
+	margin-right: 40px;
+	float: left;
+}
+
+#peachfreeze #broadcast-column
+{
+	width: 420px;
+	height: 500px;
+	margin-right: 40px;
+	float: left;
+}
+
+#peachfreeze #contacts-column
+{
+	width: 250px;
+	height: 500px;
+float: left;
+}
+
+#peachfreeze .ColumnHeader
+{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	margin: 5px 0px 10px 0px;
+	color: #F90;
+	font-size: 19px;
+	text-align: right;
+	font-weight:normal;
+}
+
+#peachfreeze .BubbleContainer
+{
+	padding: 10px;
+	background-color:#F93;
+	margin-bottom: 2px;
+	cursor: pointer;
+	border-radius: 1px;
+}
+
+#peachfreeze .BubbleContainer .Image
+{
+	float: left;
+	width: 40px;
+	height: 40px;
+	vertical-align: top;
+}
+
+#peachfreeze .BubbleContainer .TextArea
+{
+	float: left;
+	width: 250px;
+	margin-left: 10px;
+	font-size: 14px;
+	display: table-cell;
+	vertical-align: top;
+}
+
+#peachfreeze .BubbleContainer .TextArea .Text
+{
+	width: 340px;
+	height: 90px;
+	font-size: 12px;
+	margin-top: 5px;
+	color: white;
+}
+
+#peachfreeze .BubbleContainer .TextArea h3
+{
+	color: white;
+	font-weight: normal;
+}
+
+#peachfreeze .BubbleContainer .NameContainer
+{
+	float: left;
+	width: 150px;
+	margin-left: 10px;
+	font-size: 14px;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#peachfreeze .BubbleContainer .NameContainer .Name
+{
+	color: white;
+	font-weight: normal;
+	width: 150px;
+	text-align: center;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space: nowrap;
+	line-height: 40px;
+	vertical-align: middle;
+}
+
+#peacefreeze .ProfileImage
+{
+	width: 100px;
+	height: 100px;
+}
