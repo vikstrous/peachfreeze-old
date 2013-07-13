@@ -4,7 +4,7 @@
     tagName: 'ul',
 
     initialize: function() {
-      this.listenTo(this.collection, "change", this.render);
+      this.listenTo(this.collection, 'add change', this.render);
     },
 
     render: function() {
@@ -15,7 +15,7 @@
   var ProfileView = Backbone.View.extend({
 
     initialize: function() {
-      this.listenTo(this.model, "change", this.render);
+      this.listenTo(this.model, 'add change', this.render);
       this.edit_mode = false;
       $('#profile-button').click(this.edit_click.bind(this));
       $('#profile-container .ProfileImage').click(this.upload_click.bind(this));

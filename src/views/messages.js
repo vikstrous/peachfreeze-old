@@ -2,7 +2,7 @@
   var MessagesView = Backbone.View.extend({
 
     initialize: function() {
-      this.listenTo(this.collection, "change", this.render);
+      this.listenTo(this.collection, 'add change', this.render);
       this.posting = false;
       $('#post-button').click(this.post.bind(this));
     },

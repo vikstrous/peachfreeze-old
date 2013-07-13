@@ -142,6 +142,7 @@
           this.friends.add(friend);
           friend.save(null, this.getPersistOptions());
           this.listenOnFriend(friend);
+          this.sendProfileToFriend(friend); // TODO - don't send this until you confirm
         } else {
           this.friends.get(fp).set('socket', otr_socket);
         }
