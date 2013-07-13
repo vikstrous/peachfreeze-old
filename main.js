@@ -21,6 +21,8 @@ function uploadProfileImage(){
       };
       reader.onload = function(e) {
         console.log(e.target.result, 'new profile image');
+        user2.get('friends').get(keyHack.fingerprint()).get('socket').send('msg', e.target.result);
+        $('img').attr('src', e.target.result);
       };
       reader.readAsDataURL(file);
     });
@@ -44,8 +46,12 @@ function getOrGenKey(name, cb){
   });
 }
 
+var user2;
+var keyHack;
+
 tracker.connect(function(){
   getOrGenKey('dsaKeyUserA', function(keyA){
+    keyHack = keyA;
     getOrGenKey('dsaKeyUserB', function(keyB){
       var user1 = new OTRUser({
           host: '127.0.0.1',
@@ -73,7 +79,7 @@ tracker.connect(function(){
           friend.get('socket').on('msg', function(){console.log(arguments);});
         });
 
-        var user2 = new OTRUser( {
+        user2 = new OTRUser( {
             host: '127.0.0.1',
             port: 34563,
             myKey: keyB,
