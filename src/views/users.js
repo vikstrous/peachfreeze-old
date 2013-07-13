@@ -19,7 +19,6 @@
     },
 
     render: function() {
-      console.log('render profile', this.model);
       var $profile_container = $('#profile-container');
       $profile_container.find('.Name').text(this.model.get('profile').name);
     }
