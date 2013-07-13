@@ -94,6 +94,11 @@
       this.friends.fetch(this.getPersistOptions());
       this.messages = new Messages();
       this.messages.fetch(this.getPersistOptions());
+      this.listenTo(this, 'change:profile', function(){
+        this.friends.map(function(friend) {
+          this.sendProfileToFriend(friend);
+        }.bind(this));
+      }.bind(this));
       // TODO: hook up sockets with all friends
     },
 
