@@ -1,5 +1,7 @@
 (function(exports) {
   var Message = Backbone.Model.extend({
+    class_name: 'Message',
+
     defaults: {
       sender: '',
       message: '',
