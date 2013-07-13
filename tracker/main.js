@@ -16,7 +16,7 @@ server.listen(function(err){
 });
 server.on('connection', function(socket) {
   socket.on('announce', function(data, cb){
-	 data = data.toLowerCase();
+	 data.fp = data.fp.toLowerCase();
     console.log('announced', data);
     state.users[data.fp] = {ip:data.ip, port:data.port};
     if(typeof cb === 'function') cb();
