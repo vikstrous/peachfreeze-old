@@ -293,18 +293,16 @@ div,p,h1,h2,h3
 	display:inline-block;
 	margin-right:0;
 	width: 200px;
-	vertical-align: top;
+	float:left;
 }
 
 #peachfreeze .ContactsPerson .ContactsCheckBoxContainer
 {
-	margin-left:-4px;
 	width: 30px;
 	height: 60px;
 	background-color:#F63;
 	cursor: pointer;
-	display:inline-block;
-		vertical-align: top;
+	float:left;
 }
 
 #peachfreeze .PopupContainer
