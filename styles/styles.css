@@ -189,8 +189,8 @@ h1
 
 #peachfreeze .BubbleContainer .TextArea .Text
 {
-	width: 340px;
-	height: 90px;
+	width: 420px;
+	height: 80px;
 	font-size: 12px;
 	margin-top: 5px;
 	color: white;
@@ -200,6 +200,22 @@ h1
 {
 	color: white;
 	font-weight: normal;
+	float:left;
+}
+
+#peachfreeze .BubbleContainer .TextArea .Author
+{
+	float:right;
+	color: white;
+	font-size: 10px;
+}
+
+
+#peachfreeze .BubbleContainer .TextArea .Time
+{
+	float:right;
+	color: white;
+	font-size: 10px;
 }
 
 #peachfreeze .BubbleContainer .NameContainer
@@ -407,7 +423,7 @@ h1
 
 #peachfreeze #broadcast-column .PopupContainer
 {
-	width: 415px;
+	width: 420px;
 	height: 113px;
 	display:none;
 }
