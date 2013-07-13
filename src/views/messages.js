@@ -34,7 +34,7 @@
         $('#post-button').html("Submit");
       }
 
-      var models = this.collection.models;
+      var models = this.collection.models.reverse();
 
       for(var c in models){
         var msg = models[c];
