@@ -58,8 +58,16 @@
             return JSON.parse(m);
           });
           if (single) {
-            if (models.length > 0) {
-              options.success(models[0]);
+            var found = null;
+            for (var i = 0; i < array.length; i++) {
+              var json_model = JSON.parse(array[i]);
+              if (json_model['id'] == model.get('id')) {
+                found = json_model;
+                break;
+              }
+            }
+            if (found) {
+              options.success(found);
             } else {
               options.error_msg = 'Could not fetch single model';
               options.error(model, null, options);
