@@ -60,7 +60,7 @@
       $profile_container.find('.FingerPrint').text(fingerPrint.join(' ').toUpperCase());
 
       if(!this.edit_mode){
-        $profile_container.find('.ProfileInfoArea>a').attr('href', '');
+        $profile_container.find('.ProfileInfoArea>a').removeAttr('href');
         $profile_container.find('.ProfileImage').attr('src', profile.image || '');
         $profile_container.find('.Name').empty().text(profile.name || '');
         $profile_container.find('.Epithet').empty().text(profile.epithet || '');
