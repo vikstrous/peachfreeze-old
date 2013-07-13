@@ -23,8 +23,20 @@ div,p,h1,h2,h3
 	margin-left: 10px;
 	margin-top: 10px;
 	color: #F90;
-	margin-bottom: 5px;
+	margin-bottom: 35px;
 	margin-left: 5px;
+}
+
+#peachfreeze .ColumnButton
+{
+	float:right;
+	width: 100px;
+	padding: 5px !important;
+	font-size: 12px;
+	text-align: center;
+	display:inline-block;
+	color: white;
+	margin-top: 7px;
 }
 
 #peachfreeze #profile-column
@@ -48,7 +60,7 @@ div,p,h1,h2,h3
 {
 	width: 250px;
 	height: 500px;
-float: left;
+	float: left;
 }
 
 #peachfreeze .ColumnHeader
@@ -57,7 +69,7 @@ float: left;
 	margin: 5px 0px 10px 0px;
 	color: #F90;
 	font-size: 19px;
-	text-align: right;
+	float: left;
 	font-weight:normal;
 }
 
@@ -67,6 +79,7 @@ float: left;
 	background-color:#F93;
 	margin-bottom: 2px;
 	cursor: pointer;
+	display: block;
 	border-radius: 1px;
 }
 
@@ -213,4 +226,28 @@ float: left;
 
 .hide {
        display:none;
+}
+
+#peachfreeze .ContactsPerson
+{
+	width: 250px;
+}
+
+#peachfreeze .ContactsPerson .BubbleContainer
+{
+	display:inline-block;
+	margin-right:0;
+	width: 200px;
+	vertical-align: top;
+}
+
+#peachfreeze .ContactsPerson .ContactsCheckBoxContainer
+{
+	margin-left:-4px;
+	width: 30px;
+	height: 60px;
+	background-color:#F63;
+	cursor: pointer;
+	display:inline-block;
+		vertical-align: top;
 }
