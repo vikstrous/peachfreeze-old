@@ -1,4 +1,4 @@
-var TESTING = false;
+var TESTING = true;
 
 var tracker = new TrackerConnection('127.0.0.1', 1337);
 var global_users = [];
@@ -103,19 +103,17 @@ function setupTracker(user1, user2) {
       /*
       user1.on('new_friend', function(friend) {
         console.log(friend, 'new friend');
-        friend.get('socket').on('msg', function(){console.log(arguments);});
+        friend.socket.on('msg', function(){console.log(arguments);});
       });
       user1.on('connection', function(friend) {
         console.log(friend, 'connection');
-        friend.get('socket').on('msg', function(){console.log(arguments);});
+        friend.socket.on('msg', function(){console.log(arguments);});
       });
       */
 
       if (user2) {
         user2.findAndAddFriend(user1.myKey.fingerprint(), function() {
-          user2.friends.get(user1.myKey.fingerprint()).get('socket').connect(function() {
-            user2.friends.get(user1.myKey.fingerprint()).get('socket').send('msg', 'hello');
-          });
+          user2.sendPrivateMessage(user2.friends.get(user1.myKey.fingerprint()), new Message({ message: 'hello' }));
         });
       }
 

@@ -94,6 +94,7 @@
       this.friends.fetch(this.getPersistOptions());
       this.messages = new Messages();
       this.messages.fetch(this.getPersistOptions());
+      // TODO: hook up sockets with all friends
     },
 
     getPersistOptions: function() {
@@ -144,7 +145,7 @@
           this.listenOnFriend(friend);
           this.sendProfileToFriend(friend); // TODO - don't send this until you confirm
         } else {
-          this.friends.get(fp).set('socket', otr_socket);
+          this.friends.get(fp).socket = otr_socket;
         }
         console.log('friend connected', this.friends.get(fp));
         this.set('connected', true);
@@ -193,20 +194,23 @@
       this.friends.add(friend);
       friend.save(null, this.getPersistOptions());
       this.listenOnFriend(friend);
-      this.sendProfileToFriend(friend);
-      this.trigger('new_friend', friend);
-      if(typeof cb == 'function') cb(fp);
+      friend.socket.connect(function() {
+        this.sendProfileToFriend(friend);
+        this.trigger('new_friend', friend);
+        if(typeof cb == 'function') cb(fp);
+      }.bind(this));
     },
 
     listenOnFriend: function(friend) {
-      var socket = friend.get('socket');
+      var socket = friend.socket;
       var self = this;
       socket.on('profile', function(profile) {
-        friend.set('profile', JSON.parse(profile));
+        friend.set('profile', profile);
         friend.save(null, this.getPersistOptions());
       }.bind(this));
       socket.on('msg', function(msg) {
-        var message = new Message(JSON.parse(msg));
+        var message = new Message(msg);
+        console.log(message, 'YO');
         self.messages.add(message);
         message.save(null, self.getPersistOptions());
       });
@@ -214,11 +218,11 @@
 
     // TODO: add callbacks to try sending again
     sendProfileToFriend: function(friend) {
-      friend.socket.send('profile', JSON.stringify(this.get('profile')), null);
+      friend.socket.send('profile', this.get('profile'));
     },
 
     sendPrivateMessage: function(friend, msg) {
-      friend.socket.send('msg', JSON.stringify(msg), null);
+      friend.socket.send('msg', msg.toJSON());
     },
 
     broadcastMessage: function(msg) {
