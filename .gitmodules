@@ -1,3 +1,6 @@
 [submodule "lib/otrsocket.js"]
 	path = lib/otrsocket.js
 	url = git@github.com:/vikstrous/otrsocket.js.git
+[submodule "tracker/lib/otrsocket.js"]
+	path = tracker/lib/otrsocket.js
+	url = git@github.com:vikstrous/otrsocket.js.git
