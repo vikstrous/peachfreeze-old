@@ -168,9 +168,11 @@
     listen: function(cb) {
       this.server.listen(function(res){
         console.log('announcing');
-        this.tracker.announce(this.server.ip, this.server.port, this.myKey.fingerprint(), function(res){
-          if(typeof cb == 'function') cb();
-        });
+        chrome.socket.getNetworkList(function(interfaces){
+          this.tracker.announce(interfaces[1].address, this.server.port, this.myKey.fingerprint(), function(res){
+            if(typeof cb == 'function') cb();
+          });
+        }.bind(this));
       }.bind(this));
     },
 

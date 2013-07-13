@@ -1,6 +1,6 @@
-var TESTING = true;
+var TESTING = false;
 
-var tracker = new TrackerConnection('127.0.0.1', 1337);
+var tracker = new TrackerConnection('10.16.23.10', 1337);
 var global_users = [];
 
 var MY_ID = 1;
@@ -69,7 +69,7 @@ function setupUser(id, port, callback) {
     function createUserIfNecessary(model, request, options) {
       if (options.error_msg) {
         console.log('Creating new user');
-        model.set('host', '127.0.0.1');
+        model.set('host', '0.0.0.0');
         model.set('port', port);
         model.save(null, { success: this, error: this });
       } else {

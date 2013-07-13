@@ -13,8 +13,8 @@
       this.addingContact = !this.addingContact;
       if(!this.addingContact){
         $('#contacts-button').html("Add A Contact");
-      } else {
         this.user.findAndAddFriend($('#new-contact-input').val());
+      } else {
         $('#contacts-button').html("Submit");
         $('#contacts-container').animate({
           marginTop: "62px"
