@@ -116,8 +116,6 @@ function setupTracker(user1, user2) {
           user2.sendPrivateMessage(user2.friends.get(user1.myKey.fingerprint()), new Message({ message: 'hello' }));
         });
       }
-
-      setupUI(user1);
     });
   });
 }
@@ -155,6 +153,7 @@ function setup() {
       }
     },
     function(user_model) {
+      setupUI(user1);
       setupTracker(user1, user_model);
     }
   );
