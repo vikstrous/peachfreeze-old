@@ -65,6 +65,10 @@
     }
   });
 
+  var OTRFriends = Backbone.Collection.extend({
+    model: OTRFriend
+  });
+
   var OTRUser = Backbone.Model.extend({
     defaults: {
       host: '',
@@ -149,7 +153,6 @@
       var id = this.get('friends').length;
       var myKey = this.get('myKey');
       var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(myKey), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
-      
       this.get('friends').push(new OTRFriend({
         socket: new Socket(host, port, pipeline),
         host: host,
@@ -163,4 +166,6 @@
 
   exports.TrackerConnection = TrackerConnection;
   exports.OTRUser = OTRUser;
+  exports.OTRFriend = OTRFriend;
+  exports.OTRFriends = OTRFriends;
 })(window);

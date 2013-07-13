@@ -3,16 +3,18 @@
     defaults: {
       sender: '',
       message: '',
-      image: ''
+      image: '',
+      date: new Date()
     },
 
     initialize: function() {
     }
   });
 
-  Backbone.Collection.extend({
+  var Messages = Backbone.Collection.extend({
     model: Message
   });
 
   exports.Message = Message;
+  exports.Messages = Messages;
 })(window);
