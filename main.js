@@ -1,5 +1,33 @@
 var tracker = new TrackerConnection('127.0.0.1', 1337);
 
+document.querySelector('#choose_file').addEventListener('click', function(e) {
+  uploadProfileImage();
+});
+
+function uploadProfileImage(){
+  chrome.fileSystem.chooseEntry({type: 'openFile', accepts: [{
+    //mimeTypes: ['text/*'],
+    extensions: ['jpg', 'png', 'gif']
+  }]},function(readOnlyEntry) {
+    if (!readOnlyEntry) {
+      // user cancelled
+      return;
+    }
+    readOnlyEntry.file(function(file) {
+      var reader = new FileReader();
+
+      reader.onerror = function(){
+        console.log(arguments);
+      };
+      reader.onload = function(e) {
+        console.log(e.target.result, 'new profile image');
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+}
+
+
 function getOrGenKey(name, cb){
   chrome.storage.local.get(name, function(data) {
     var myKey;

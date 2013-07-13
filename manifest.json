@@ -7,7 +7,11 @@
       "scripts": ["background.js"]
     }
   },
-  "permissions": ["storage",{
+  "permissions": [{
+    "fileSystem": ["write"]
+  },
+  "storage",
+  {
     "socket": [
       "tcp-connect", "tcp-listen"
     ]
