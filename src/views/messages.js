@@ -1,14 +1,14 @@
 (function(exports) {
   var MessagesView = Backbone.View.extend({
 
-    tagName: 'ui',
+    tagName: 'ul',
 
     initialize: function() {
       this.listenTo(this.collection, "change", this.render);
     },
 
     render: function() {
-
+      console.log('render messages', this.collection);
     }
   });
 
