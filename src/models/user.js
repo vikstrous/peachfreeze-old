@@ -62,7 +62,7 @@
       port: '',
       key: '',
       fp: '',
-      profile: null
+      profile: new Profile()
     },
 
     connect: function(cb) {
@@ -86,6 +86,7 @@
     defaults: {
       host: '',
       port: '',
+      profile: new Profile(),
       connected: false, // Can listen on changes to this
     },
 

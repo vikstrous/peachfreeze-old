@@ -1,0 +1,296 @@
+body
+{
+	background-color: #FC6;
+}
+
+div,p,h1,h2,h3
+{
+	padding: 0;
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+}
+
+#peachfreeze
+{
+	width: 1200px;
+	height: 700px;
+	padding: 10px 15px 10px 15px;
+}
+
+#peachfreeze h1
+{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	font-size: 24px;
+	font-style:normal;
+	padding:0; margin:0;
+	margin-left: 10px;
+	margin-top: 10px;
+	color: #F90;
+	margin-bottom: 35px;
+	margin-left: 5px;
+}
+
+#peachfreeze .ColumnButton
+{
+	float:right;
+	width: 100px;
+	padding: 5px !important;
+	font-size: 12px;
+	text-align: center;
+	display:inline-block;
+	color: white;
+	margin-top: 7px;
+}
+
+#peachfreeze #profile-column
+{
+	margin-left: 10px;
+	width: 435px;
+	height: 500px;
+	margin-right: 40px;
+	float: left;
+}
+
+#peachfreeze #broadcast-column
+{
+	width: 420px;
+	height: 500px;
+	margin-right: 40px;
+	float: left;
+}
+
+#peachfreeze #contacts-column
+{
+	width: 250px;
+	height: 500px;
+	float: left;
+}
+
+#peachfreeze .ColumnHeader
+{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	margin: 5px 0px 10px 0px;
+	color: #F90;
+	font-size: 19px;
+	float: left;
+	font-weight:normal;
+}
+
+#peachfreeze .BubbleContainer
+{
+	padding: 10px;
+	background-color:#F93;
+	margin-bottom: 2px;
+	cursor: pointer;
+	display: block;
+	border-radius: 1px;
+}
+
+#peachfreeze .BubbleContainer .Image
+{
+	float: left;
+	width: 40px;
+	height: 40px;
+	vertical-align: top;
+}
+
+#peachfreeze .BubbleContainer .TextArea
+{
+	float: left;
+	width: 250px;
+	margin-left: 10px;
+	font-size: 14px;
+	display: table-cell;
+	vertical-align: top;
+}
+
+#peachfreeze .BubbleContainer .TextArea .Text
+{
+	width: 340px;
+	height: 90px;
+	font-size: 12px;
+	margin-top: 5px;
+	color: white;
+}
+
+#peachfreeze .BubbleContainer .TextArea h3
+{
+	color: white;
+	font-weight: normal;
+}
+
+#peachfreeze .BubbleContainer .NameContainer
+{
+	float: left;
+	width: 150px;
+	margin-left: 10px;
+	font-size: 14px;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#peachfreeze .BubbleContainer .NameContainer .Name
+{
+	color: white;
+	font-weight: normal;
+	width: 150px;
+	text-align: center;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space: nowrap;
+	line-height: 40px;
+	vertical-align: middle;
+}
+
+#peachfreeze .ProfileImage
+{
+	width: 150px;
+	height: 150px;
+	float:left;
+	margin-right: 15px;
+}
+
+#peachfreeze  #profile-container
+{
+	padding: 20px;
+	background-color:#F93;
+	color: white !important;
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif !important;
+	font-weight: normal !important;
+	font-size: 14px;
+}
+
+#peachfreeze  #profile-container textarea
+{
+	resize: none;
+	background-color:#FF9;
+	overflow:hidden;
+	border:0;
+	color:#F60;
+}
+
+#peachfreeze .ProfileTextArea
+{
+	float:left;
+	width: 230px;
+}
+
+#peachfreeze .ProfileTextArea .Name
+{
+	font-weight: normal !important;
+	width: 230px;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space: nowrap;
+	margin-bottom: 7px;
+}
+
+#peachfreeze .ProfileTextArea .Name input
+{
+	margin: 0;
+	padding: 0;
+	height: 19px;
+	width: 230px;
+	background-color:#FF9;
+	padding-left: 10px;
+	color:#F60;
+	border:0;
+}
+
+#peachfreeze .ProfileTextArea .Epithet textarea
+{
+	padding: 5px;
+	width: 220px;
+	height: 80px;
+}
+
+#peachfreeze #profile-description textarea
+{
+	padding: 5px;
+	width: 385px;
+	height: 140px;
+}
+
+#peachfreeze .ProfileTextArea .FingerPrint
+{
+	color:#6FC;
+	font-size: 8px;
+	-webkit-user-select: all;  /* Chrome all / Safari all */
+	
+	/* No support for these yet, use at own risk */
+	user-select: all; 
+	font-family:"Lucida Sans Unicode", "Lucida Grande", monospace
+}
+#peachfreeze .ProfileTextArea #finger-print
+{
+	padding:0;
+	margin:0;
+	margin-top: 2px;
+	height: 5px;
+}
+#peachfreeze .ProfileTextArea #finger-print div
+{
+	width:43px;
+	height: 5px;
+	display: inline-block;
+	margin-left: 3px;
+	vertical-align: top;
+}
+
+#peachfreeze .ProfileTextArea #finger-print div:first-child
+{
+	margin-left: 0;
+}
+
+#peachfreeze .ProfileTextArea .Epithet
+{
+	margin-top: 9px;
+	font-size: 12px;
+	width: 230px;
+	line-height: 17px;
+	height: 90px;
+}
+
+#peachfreeze #profile-description
+{
+	padding: 20px;
+	background-color:#F93;
+	line-height: 15px;
+	padding:0;
+	margin:0;
+	color: white !important;
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif !important;
+	font-weight: normal !important;
+	font-size: 12px;
+		margin-top: 15px;
+
+}
+
+.hide {
+       display:none;
+}
+
+#peachfreeze .ContactsPerson
+{
+	width: 250px;
+}
+
+#peachfreeze .ContactsPerson .BubbleContainer
+{
+	display:inline-block;
+	margin-right:0;
+	width: 200px;
+	vertical-align: top;
+}
+
+#peachfreeze .ContactsPerson .ContactsCheckBoxContainer
+{
+	margin-left:-4px;
+	width: 30px;
+	height: 60px;
+	background-color:#F63;
+	cursor: pointer;
+	display:inline-block;
+		vertical-align: top;
+}

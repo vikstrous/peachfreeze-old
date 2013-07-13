@@ -1,0 +1,163 @@
+.slideshow
+{
+	overflow:hidden;
+}
+
+.slideshow .slideshowSlider
+{
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.slideshow .slideshowSlider .slideshowImageContainer
+{
+	height: 100%;
+	white-space:nowrap;
+
+}
+
+.slideshow .slideshowImageContainer img
+{
+	height: 100%;
+}
+
+.slideshow .slideshowTextContainer
+{
+	width: 100%;
+	height: 70px;
+	background-color:#000000;
+	opacity:0.8;
+	filter:alpha(opacity=80);
+	padding: 5px 5px;
+}
+
+.slideshow .slideshowTextContainer h3
+{
+	margin: 5px;
+	color: #1e839d;
+	font-size: 17px;
+}
+
+.slideshow .slideshowTextContainer .slideshowDescription
+{
+	margin: 2px 5px;
+	color: white;
+	font-size: 14px;
+	float:left;
+}
+
+.slideshow .slideshowTextContainer .slideshowTabContainer
+{
+	color: #CCCCCC;
+	font-size: 12px;
+	margin-right: 15px;
+	margin-bottom: 1px;
+}
+
+.slideshow .slideshowTextContainer .slideshowTabContainer span
+{
+	margin: 0 2px;
+	cursor: pointer;
+}
+
+.slideshow .slideshowTextContainer .slideshowTabContainer span:hover
+{
+	color: #0FF;
+}
+
+.slideshow .slideshowTextContainer .slideshowTabContainer .selected
+{
+	color: #1e839d !important;
+}
+
+.slideshow .slideshowTextContainer .slideshowScrollContainer
+{
+	float: right;
+	position: relative;
+}
+
+.slideshow .slideshowTextContainer .slideshowScrollContainer div
+{
+	position: absolute;
+	width: 8px;
+	height: 2px;
+	background-color: #1e839d;
+}
+
+.ContactsListWidgetPerson
+{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	width: 150px;
+	height: 30px;
+	border-top:1px solid rgb(130,130,150);
+	padding: 5px 5px 5px 5px;
+	cursor:pointer;
+}
+.ContactsListWidgetPerson:hover
+{
+	background-color:#def
+}
+.ContactsListWidgetPerson:last-child
+{
+	border-bottom:1px solid rgb(130,130,150);
+
+}
+.ContactsListWidgetPerson img
+{
+	float:left;
+	width: 30px;
+	height: 30px;
+	vertical-align: center;
+	margin-right:7px;
+}
+.ContactsListWidgetPerson p
+{
+	color: rgb(130,130,150);
+	
+}
+.ContactsListWidgetPerson .TextContainer
+{
+	height: 30px;
+	display: table-cell; 
+  	vertical-align: middle;
+}
+
+.ContactsListWidget
+{
+	color: rgb(130,130,150);
+	position:absolute;
+	width:  170px;
+	height: 200px;
+	padding: 15px 10px 15px 10px;
+	background-color: rgb(230,230,250);
+}
+
+.ContactsListWidget .ActionButton
+{
+	-webkit-transform: rotate(90deg); 
+	-moz-transform: rotate(90deg);	
+	position: absolute;
+	right:-60px;
+	top:40%;
+	cursor: pointer;
+	padding: 5px;
+	background-color: rgb(230,230,250);
+	-webkit-user-select: none;  
+  -moz-user-select: none;    
+  -ms-user-select: none;      
+  user-select: none;
+}
+
+.ContactsListWidget .actionButton:hover
+{
+	background-color: #def;
+}
+
+.ContactsListWidget .Container
+{
+	overflow-y:scroll;
+	overflow-x:hidden;
+	height:200px;
+}
