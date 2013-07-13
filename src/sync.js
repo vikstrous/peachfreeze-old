@@ -71,7 +71,8 @@
       } else if (method == 'update') {
         var found = false;
         for (var i = 0; i < array.length; i++) {
-          if (array[i]['fp'] == model.get('fp')) {
+          var json_model = JSON.parse(array[i]);
+          if (json_model['id'] == model.get('id')) {
             array[i] = JSON.stringify(model);
             found = true;
             break;
@@ -87,12 +88,12 @@
             if (options.success) {
               options.success();
             }
-        });
+          });
         }
       } else if (method == 'delete') {
         var found = false;
         for (var i = 0; i < array.length; i++) {
-          if (array[i]['fp'] == model.get('fp')) {
+          if (array[i]['id'] == model.get('id')) {
             array.splice(i, 1);
             found = true;
             break;

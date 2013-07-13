@@ -52,82 +52,36 @@ function getOrGenKey(name, cb){
   });
 }
 
-/*
-function AsyncJoiner() {
-  this.branches = 0;
-  this.ready = false;
-  this.done_count = 0;
-  this.callback = null;
-  this.lock = false;
-}
-
-AsyncJoiner.prototype.setCallback(f) {
-  this.callback = f;
-}
-
-AsyncJoiner.prototype._branch_done = function() {
-  this.done_count++;
-  if (this.ready && this.done_count >= this.branches) {
-    this.callback();
-  }
-}
-
-AsyncJoiner.prototype.add = function(f) {
-  this.branches++;
-  var self = this;
-  var called = false;
-  return (function() {
-    f(arguments.slice(1));
-    if (!called) {
-      called = true;
-      self._branch_done();
-    }
-  });
-};
-
-AsyncJoiner.prototype.ready = function() {
-  if (this.done_count >= this.branches) {
-    this.callback();
-  }
-  this.ready = true;
-};
-
-*/
-
 function setupUser(id, port, callback) {
-  var user_model = new OTRUser({id: id});
+  // TODO use first argument as error model
   Step(
-    function fetchUser() {
-      user_model.fetch(
-        {
-          success: this,
-          error: this
-        }
-      );
+    function genKey() {
+      getOrGenKey('dsaKey' + id, this);
+    },
+    function saveFingerPrint(key) {
+      model = new OTRUser({id: id});
+      model.setKey(key);
+      this(model);
+    },
+    function fetchUser(model) {
+      model.fetch({ success: this, error: this });
     },
     function createUserIfNecessary(model, request, options) {
       if (options.error_msg) {
         console.log('Creating new user');
-        model = new OTRUser({
-          id: id,
-          host: '127.0.0.1',
-          port: port,
-        });
+        model.set('host', '127.0.0.1');
+        model.set('port', port);
         model.save(null, { success: this, error: this });
       } else {
         console.log('Retrieved user from local storage');
         console.log(model);
-        this(model); // This is correct.
+        this(model);
       }
     },
-    function genKey(model, request, options) {
-      user_model = model;
-      user_model.setTracker(tracker); // Important
-      getOrGenKey('dsaKey' + id, this);
-    },
-    function startTheServer(key) {
-      user_model.startServer(key);
-      callback(user_model);
+    function startTheServer(model) {
+      model.setTracker(tracker); // Important
+      model.startServer(key);
+      callback(model);
     }
   );
 }

@@ -104,7 +104,7 @@
       this.tracker = t;
     },
 
-    startServer: function(key) {
+    setKey: function(key) {
       if (!key) {
         this.myKey = new DSA();
       } else if (typeof key === 'string') {
@@ -113,7 +113,9 @@
         this.myKey = key;
       }
       this.set('fp', this.myKey.fingerprint());
+    },
 
+    startServer: function() {
       var pipeline = function(){
         return [new EventToObject(), new ObjectToString(), new OTRPipe(this.myKey), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];
       };
