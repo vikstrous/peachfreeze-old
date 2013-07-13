@@ -1,15 +1,10 @@
-var TESTING = true;
+var TESTING = false;
 
 var tracker = new TrackerConnection('127.0.0.1', 1337);
 var global_users = [];
 
 var MY_ID = 1;
 var HIS_ID = 2;
-
-var mc = new Messages();
-mc.reset([{sender:'title', message: 'text'}, {sender:'ti2tle', message: 'tex2t'}]);
-var mv = new MessagesView({collection:mc});
-mv.render();
 
 document.querySelector('#choose_file').addEventListener('click', function(e) {
   uploadProfileImage();
@@ -146,21 +141,21 @@ function setupTracker(user1, user2) {
       }
       // at this point announcing is done
 
-      var pv = new ProfileView({model:user1});
-      pv.render();
 
       tracker.findUser(user1.myKey.fingerprint(), function(){
         console.log('found user:', arguments);
       });
 
-      user1.on('new_friend', function(friend){
+      /*
+      user1.on('new_friend', function(friend) {
         console.log(friend, 'new friend');
         friend.get('socket').on('msg', function(){console.log(arguments);});
       });
-      user1.on('connection', function(friend){
+      user1.on('connection', function(friend) {
         console.log(friend, 'connection');
         friend.get('socket').on('msg', function(){console.log(arguments);});
       });
+      */
 
       if (user2) {
         user2.findAndAddFriend(user1.myKey.fingerprint(), function() {
@@ -169,8 +164,25 @@ function setupTracker(user1, user2) {
           });
         });
       }
+
+      setupUI(user1);
     });
   });
+}
+
+function setupUI(user) {
+  var pv = new ProfileView({ model:user });
+  pv.render();
+
+  /*
+  var mc = new Messages();
+  mc.reset([{sender:'title', message: 'text'}, {sender:'ti2tle', message: 'tex2t'}]);
+  */
+
+  var mc = user.messages;
+
+  var mv = new MessagesView({ collection: mc });
+  mv.render();
 }
 
 function setup() {

@@ -14,22 +14,29 @@
   Backbone.sync = function(method, model, options) {
     // method is one of ("create", "read", "update", or "delete")
 
+    console.log('options');
+    console.log(options);
+    var key_suffix = options['key_suffix'];
     var single = false;
-    var class_name = null;
+    var key_name = null;
     if (method == 'read') {
       // Model might be a collection in this case
       if (model.class_name) {
         single = true;
-        class_name = model.class_name;
+        key_name = model.class_name;
       } else {
-        class_name = model.model.prototype.class_name;
+        key_name = model.model.prototype.class_name;
       }
     } else {
-      class_name = model.class_name;
+      key_name = model.class_name;
     }
 
-    chrome.storage.local.get(singleton(class_name, []), function(array) {
-      array = array[class_name];
+    if (key_suffix) {
+      key_name = key_name + key_suffix;
+    }
+
+    chrome.storage.local.get(singleton(key_name, []), function(array) {
+      array = array[key_name];
       /*
       var error = chrome.runtime.lastError;
       if (error || array == undefined) {
@@ -39,7 +46,7 @@
       console.log(method);
       if (method == 'create') {
         array.push(JSON.stringify(model));
-        chrome.storage.local.set(singleton(class_name, array), function() {
+        chrome.storage.local.set(singleton(key_name, array), function() {
           if (options.success) {
             options.success(model, null, options);
           }
@@ -48,7 +55,7 @@
         if (options.success) {
           var models = _.map(array, function (m) {
             return JSON.parse(m);
-            //return new classNameMap[class_name](m);
+            //return new classNameMap[key_name](m);
           });
           if (single) {
             if (models.length > 0) {
@@ -72,12 +79,12 @@
           }
         }
         if (found) {
-          chrome.storage.local.set(singleton(class_name, array), function() {
+          chrome.storage.local.set(singleton(key_name, array), function() {
             success(model, null, options);
           });
         } else {
           array.push(JSON.stringify(model));
-          chrome.storage.local.set(singleton(class_name, array), function() {
+          chrome.storage.local.set(singleton(key_name, array), function() {
             if (options.success) {
               options.success(model, null, options);
             }
@@ -93,12 +100,12 @@
           }
         }
         if (found) {
-          chrome.storage.local.set(singleton(class_name, array), function() {
-            success(model, null, options);
+          chrome.storage.local.set(singleton(key_name, array), function() {
+            options.success(model, null, options);
           });
         } else {
           options.error_msg = 'Model not found for deletion';
-          error(model, null, options);
+          options.error(model, null, options);
         }
       }
     });

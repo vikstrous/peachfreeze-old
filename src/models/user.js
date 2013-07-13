@@ -57,23 +57,22 @@
     idAttribute: 'fp',
 
     default: {
-      socket: null,
       host: '',
       port: '',
-      key: '',
       fp: '',
+      accepted: false,
       profile: new Profile()
     },
 
     connect: function(cb) {
-      this.get('socket').connect(function(ost_socket) {
-        this.set('key', ost_socket.pipeline[3].buddy.their_priv_pk);
+      this.socket.connect(function(ost_socket) {
+        this.key = ost_socket.pipeline[3].buddy.their_priv_pk;
         cb();
       }.bind(this));
     },
 
     send: function(topic, msg, cb) {
-      this.get('socket').send(topic, msg, cb);
+      this.socket.send(topic, msg, cb);
     }
   });
 
@@ -92,6 +91,13 @@
 
     initialize: function() {
       this.friends = new OTRFriends();
+      this.friends.fetch(this.getPersistOptions());
+      this.messages = new Messages();
+      this.messages.fetch(this.getPersistOptions());
+    },
+
+    getPersistOptions: function() {
+      return { key_suffix: ('_' + this.get('id')) };
     },
 
     setTracker: function(t) {
@@ -115,8 +121,6 @@
       this.server.on('connection', this._onconnection.bind(this));
     },
 
-    //util.inherits(OTRUser, EventEmitter);
-
     _onconnection: function(otr_socket) {
       // received connection, choose what to do with it - new friend or existing friend?
       // We have to wait for OTR to finish its thing
@@ -126,13 +130,16 @@
       var theRest = function(){
         var fp = buddy.their_priv_pk.fingerprint();
         if(!this.friends.get(fp)){
-          this.friends.push(new OTRFriend({
+          var friend = new OTRFriend({
             host: otr_socket.host,
             port: otr_socket.port,
-            key: buddy.their_priv_pk,
             fp: fp,
-            socket: otr_socket
-          }));
+          });
+          friend.key = buddy.their_priv_pk;
+          friend.socket = otr_socket;
+          this.friends.add(friend);
+          friend.save(null, this.getPersistOptions());
+          this.listenOnFriend(friend);
         } else {
           this.friends.get(fp).set('socket', otr_socket);
         }
@@ -173,14 +180,42 @@
       var id = this.friends.length;
       var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(this.myKey), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
       var friend = new OTRFriend({
-        socket: new Socket(host, port, pipeline),
         host: host,
         port: port,
-        fp: fp
+        fp: fp,
+        accepted: true
       });
+      friend.socket = new Socket(host, port, pipeline);
+      // Add key?
       this.friends.add(friend);
+      friend.save(null, this.getPersistOptions());
+      this.listenOnFriend(friend);
+      this.sendProfileToFriend(friend);
       this.trigger('new_friend', friend);
       if(typeof cb == 'function') cb(fp);
+    },
+
+    listenOnFriend: function(friend) {
+      var socket = friend.get('socket');
+      var self = this;
+      socket.on('profile', function(profile) {
+        friend.set('profile', JSON.parse(profile));
+        friend.save(null, this.getPersistOptions());
+      }.bind(this));
+      socket.on('msg', function(msg) {
+        var message = new Message(JSON.parse(msg));
+        self.messages.add(message);
+        message.save(null, self.getPersistOptions());
+      });
+    },
+
+    // TODO: add callbacks to try sending again
+    sendProfileToFriend: function(friend) {
+      friend.socket.send('profile', JSON.stringify(this.get('profile')), null);
+    },
+
+    sendMessage: function(friend, msg) {
+      friend.socket.send('msg', JSON.stringify(msg), null);
     }
   });
 
