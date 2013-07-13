@@ -1,7 +1,8 @@
 (function(exports) {
   var MessagesView = Backbone.View.extend({
 
-    initialize: function() {
+    initialize: function(options) {
+      this.user = options['user'];
       this.listenTo(this.collection, 'add change', this.render);
       this.posting = false;
       $('#post-button').click(this.post.bind(this));
@@ -16,7 +17,8 @@
         this.posting = true;
       } else {
         this.posting = false;
-        this.collection.unshift({'message': $('#new-broadcast-input').val()});
+        this.user.broadcastMessage(new Message({'message': $('#new-broadcast-input').val()}));
+        //this.collection.unshift({'message': $('#new-broadcast-input').val()});
         console.log('post message: ', $('#new-broadcast-input').val());
       }
       this.render();

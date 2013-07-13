@@ -135,7 +135,7 @@ function setupUI(user) {
 
   var mc = user.messages;
 
-  var mv = new MessagesView({ collection: mc });
+  var mv = new MessagesView({ collection: mc, user: user });
   mv.render();
 }
 

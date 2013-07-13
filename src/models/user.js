@@ -225,6 +225,11 @@
       this.friends.map(function(friend) {
         this.sendPrivateMessage(friend, msg);
       });
+
+      // This will add it to the view
+      this.messages.add(msg);
+      // And this will persist it forever!
+      msg.save(null, this.getPersistOptions());
     }
 
   });
