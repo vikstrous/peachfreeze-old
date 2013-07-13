@@ -15,7 +15,7 @@ document.querySelector('#choose_file').addEventListener('click', function(e) {
   uploadProfileImage();
 });
 
-function uploadProfileImage(){
+function uploadProfileImage(cb){
   chrome.fileSystem.chooseEntry({type: 'openFile', accepts: [{
     //mimeTypes: ['text/*'],
     extensions: ['jpg', 'png', 'gif']
@@ -28,12 +28,11 @@ function uploadProfileImage(){
       var reader = new FileReader();
 
       reader.onerror = function(){
-        console.log(arguments);
+        console.error(arguments);
       };
       reader.onload = function(e) {
-        console.log(e.target.result, 'new profile image');
-        user2.get('friends').get(keyHack.fingerprint()).get('socket').send('msg', e.target.result);
-        $('img').attr('src', e.target.result);
+        console.log(e.target.result);
+        cb(e.target.result);
       };
       reader.readAsDataURL(file);
     });

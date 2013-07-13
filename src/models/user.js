@@ -106,6 +106,7 @@
       } else {
         this.myKey = key;
       }
+      this.set('fp', this.myKey.fingerprint());
 
       var pipeline = function(){
         return [new EventToObject(), new ObjectToString(), new OTRPipe(this.myKey), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];

@@ -215,30 +215,31 @@ div,p,h1,h2,h3
 #peachfreeze .ProfileTextArea .FingerPrint
 {
 	color:#6FC;
-	font-size: 8px;
+	font-size: 9px;
 	-webkit-user-select: all;  /* Chrome all / Safari all */
 	
 	/* No support for these yet, use at own risk */
+	color:black;
 	user-select: all; 
-	font-family:"Lucida Sans Unicode", "Lucida Grande", monospace
+	font-family: monospace;
 }
-#peachfreeze .ProfileTextArea #finger-print
+#peachfreeze .ProfileTextArea .finger-print
 {
 	padding:0;
 	margin:0;
 	margin-top: 2px;
 	height: 5px;
 }
-#peachfreeze .ProfileTextArea #finger-print div
+#peachfreeze .ProfileTextArea .finger-print div
 {
-	width:43px;
+	width:42px;
 	height: 5px;
 	display: inline-block;
 	margin-left: 3px;
 	vertical-align: top;
 }
 
-#peachfreeze .ProfileTextArea #finger-print div:first-child
+#peachfreeze .ProfileTextArea .finger-print div:first-child
 {
 	margin-left: 0;
 }
