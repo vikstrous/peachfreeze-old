@@ -1,4 +1,23 @@
+
 (function(exports) {
+	
+	var parseText = function(text){
+		text = $.trim(text);
+		var first = text.indexOf("\n\n");
+		if( first  != -1 ){
+			return {
+				title: $.trim(text.substring(0,first)),
+				text: $.trim(text.substring(first+2))
+			}
+		}
+		else {
+			return {
+				title: null,
+				text: text
+			}
+		}
+	}
+	
   var MessagesView = Backbone.View.extend({
 
     initialize: function(options) {

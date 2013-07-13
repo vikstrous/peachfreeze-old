@@ -45,8 +45,6 @@ $(function() {
 	}
 	
 	updateBubbleAnimation();
-	
-	
 
 	// $('#peachfreeze #contacts-button').click(
 	// 	function(){

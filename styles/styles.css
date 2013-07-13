@@ -22,7 +22,7 @@ div,p,h1,h2,h3
 
 #peachfreeze
 {
-	width: 1200px;
+	width: 1240px;
 	height: 700px;
 	padding: 10px 15px 10px 15px;
 }
@@ -69,8 +69,24 @@ h1
 	margin-left: 10px;
 }
 
+
+::-webkit-scrollbar {
+    width: 7px;
+}
+ 
+::-webkit-scrollbar-track {
+	background-color: #FC6;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #f90;
+}
+
+
 #peachfreeze .ColumnButton
 {
+	margin-right: 10px;
 	float:right;
 	width: 100px;
 	padding: 5px !important;
@@ -85,8 +101,7 @@ h1
 {
 	position: relative;
 	margin-left: 0px;
-	width: 435px;
-	height: 500px;
+	width: 450px;
 	margin-right: 40px;
 	float: left;
 }
@@ -94,7 +109,7 @@ h1
 #peachfreeze #broadcast-column
 {
 	position: relative;
-	width: 435px;
+	width: 450px;
 	height: 500px;
 	margin-right: 40px;
 	float: left;
@@ -103,8 +118,7 @@ h1
 #peachfreeze #contacts-column
 {
 	position: relative;
-	width: 250px;
-	height: 500px;
+	width: 260px;
 	float: left;
 }
 
@@ -127,6 +141,27 @@ h1
 	display: block;
 	border-radius: 1px;
 }
+
+#peachfreeze #broadcast-container
+{
+		overflow-y: scroll;
+		height: 500px;
+		padding-right: 3px;
+}
+#peachfreeze #contacts-container
+{
+		overflow-y: scroll;
+		height: 500px;
+		padding-right: 3px;
+}
+
+#peachfreeze #profile-container
+{
+		overflow-y: scroll;
+		padding-right: 3px;
+}
+
+
 
 #peachfreeze #broadcast-container .BubbleContainer
 {
