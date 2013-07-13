@@ -83,6 +83,7 @@
       port: '',
       myKey: '',
       tracker: '',
+      profile: null,
       connected: false, // Can listen on changes to this
       friends: new OTRFriends()
     },

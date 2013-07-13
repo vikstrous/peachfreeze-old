@@ -12,5 +12,19 @@
     }
   });
 
+  var ProfileView = Backbone.View.extend({
+
+    initialize: function() {
+      this.listenTo(this.model, "change", this.render);
+    },
+
+    render: function() {
+      console.log('render profile', this.model);
+      var $profile_container = $('#profile-container');
+      $profile_container.find('.Name').text(this.model.get('profile').name);
+    }
+  });
+
   exports.UsersView = UsersView;
+  exports.ProfileView = ProfileView;
 })(window);

@@ -62,8 +62,12 @@ tracker.connect(function(){
           host: '127.0.0.1',
           port: 34562,
           myKey: keyA,
+          profile: {'name': 'User1'},
           tracker: tracker
       });
+
+      var pv = new ProfileView({model:user1});
+      pv.render();
 
       user1.listen(function(err){
         if (err) {
