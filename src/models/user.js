@@ -53,31 +53,60 @@
   }
 
   var OTRFriend = Backbone.Model.extend({
-    class_name: 'OTRFriend',
-    idAttribute: 'fp',
+    'class_name': 'OTRFriend',
+    'idAttribute': 'fp',
 
-    default: {
-      host: '',
-      port: '',
-      fp: '',
-      accepted: false,
-      profile: new Profile()
+    'default': function() {
+      return {
+        host: '',
+        port: '',
+        fp: '',
+        accepted: false,
+        profile: new Profile()
+      };
     },
 
-    connect: function(cb) {
-      this.socket.connect(function(ost_socket) {
-        this.key = ost_socket.pipeline[3].buddy.their_priv_pk;
-        cb();
+    'connect': function(cb) {
+      console.log('connecting to friend');
+
+      this.socket.connect(function(err) {
+        if(err) {
+          console.error(this);
+          throw err;
+        }
+
+        var buddy = this.socket.pipeline[3].buddy;
+
+        var theRest = function(){
+          var fp = buddy.their_priv_pk.fingerprint();
+          this.key = buddy.their_priv_pk;
+
+          console.log('connected to friend');
+        }.bind(this);
+
+        if(buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED){
+          var otr_cb = function (state) {
+            if(state === OTR.CONST.STATUS_AKE_SUCCESS){
+              theRest();
+              buddy.off('status', otr_cb);
+            }
+          };
+          buddy.on('status', otr_cb);
+        } else {
+          theRest();
+        }
+        buddy.sendQueryMsg();
+
       }.bind(this));
     },
 
-    send: function(topic, msg, cb) {
+    'send': function(topic, msg, cb) {
       this.socket.send(topic, msg, cb);
     }
   });
 
   var OTRFriends = Backbone.Collection.extend({
-    model: OTRFriend,
+    model: OTRFriend
   });
 
   var OTRUser = Backbone.Model.extend({
@@ -86,12 +115,28 @@
       host: '',
       port: '',
       profile: new Profile(),
-      connected: false, // Can listen on changes to this
+      connected: false // Can listen on changes to this
     },
 
     initialize: function() {
       this.friends = new OTRFriends();
-      this.friends.fetch(this.getPersistOptions());
+      var friendsOptions = this.getPersistOptions();
+      friendsOptions.success = function(collection, friends, options){
+        collection.map(function(friend){
+          this.tracker.findUser(friend.get('fp'), function(res){
+            console.log(res, 'res');
+            var key = this.myKey;
+            var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(key), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
+            friend.socket = new Socket(res.ip, res.port, pipeline);
+            friend.connect(function(){
+              console.log('friend connected!!! listening and sending profile');
+              this.listenOnFriend(friend);
+              this.sendProfileToFriend(friend);
+            }.bind(this));
+          }.bind(this));
+        }.bind(this));
+      }.bind(this);
+      this.friends.fetch(friendsOptions);
       this.messages = new Messages();
       this.messages.fetch(this.getPersistOptions());
       this.listenTo(this, 'change:profile', function(){
@@ -122,10 +167,12 @@
     },
 
     startServer: function() {
+      var key = this.myKey;
       var pipeline = function(){
-        return [new EventToObject(), new ObjectToString(), new OTRPipe(this.myKey), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];
+        return [new EventToObject(), new ObjectToString(), new OTRPipe(key), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];
       };
-      this.server = new SocketServer(this.get('host'), parseInt(this.get('port')), pipeline);
+      console.log('Starting server on ' + this.get('host') + ':' + this.get('port'));
+      this.server = new SocketServer(this.get('host'), this.get('port'), pipeline);
       this.server.on('connection', this._onconnection.bind(this));
     },
 
@@ -137,11 +184,13 @@
 
       var theRest = function(){
         var fp = buddy.their_priv_pk.fingerprint();
+        var friend;
         if(!this.friends.get(fp)){
-          var friend = new OTRFriend({
+          // new friend
+          friend = new OTRFriend({
             host: otr_socket.host,
             port: otr_socket.port,
-            fp: fp,
+            fp: fp
           });
           friend.key = buddy.their_priv_pk;
           friend.socket = otr_socket;
@@ -150,11 +199,15 @@
           this.listenOnFriend(friend);
           this.sendProfileToFriend(friend); // TODO - don't send this until you confirm
         } else {
-          this.friends.get(fp).socket = otr_socket;
+          // old friend (loaded form storage)
+          friend = this.friends.get(fp);
+          this.friend.socket = otr_socket;
+          this.listenOnFriend(friend);
+          this.sendProfileToFriend(friend);
         }
-        console.log('friend connected', this.friends.get(fp));
-        this.set('connected', true);
-        this.trigger('connection', this.friends.get(fp));
+        console.log('friend connected', friend);
+        friend.set('connected', true);
+        this.trigger('connection', friend);
       }.bind(this);
 
       if(buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED){
@@ -168,6 +221,7 @@
       } else {
         theRest();
       }
+      buddy.sendQueryMsg()
     },
 
     listen: function(cb) {
@@ -202,6 +256,7 @@
       friend.save(null, this.getPersistOptions());
       this.listenOnFriend(friend);
       friend.socket.connect(function() {
+        console.error(arguments);
         this.sendProfileToFriend(friend);
         this.trigger('new_friend', friend);
         if(typeof cb == 'function') cb(fp);
@@ -225,7 +280,8 @@
 
     // TODO: add callbacks to try sending again
     sendProfileToFriend: function(friend) {
-      friend.socket.send('profile', this.get('profile'));
+      if (friend.socket) //TODO: find a better way to check if user is connected
+        friend.socket.send('profile', this.get('profile'));
     },
 
     sendPrivateMessage: function(friend, msg) {
