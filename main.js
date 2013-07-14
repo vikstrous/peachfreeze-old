@@ -1,6 +1,6 @@
 var TESTING = false;
 
-var tracker = new TrackerConnection('10.16.23.57', 1337);
+var tracker = new TrackerConnection('127.0.0.1', 1337);
 var global_users = [];
 
 var MY_ID = 1;
@@ -52,8 +52,10 @@ function getOrGenKey(name, cb){
   });
 }
 
-function setupUser(id, port, callback) {
+function setupUser(id, callback) {
   // TODO use first argument as error model
+  // TODO: deal with port already taken exceptions
+  var port = parseInt(32000+Math.random()*1000, 10);
   Step(
     function genKey() {
       getOrGenKey('dsaKey' + id, this);
@@ -61,9 +63,7 @@ function setupUser(id, port, callback) {
     function saveFingerPrint(key) {
       model = new OTRUser({id: id});
       model.setKey(key);
-      this(model);
-    },
-    function fetchUser(model) {
+      model.setTracker(tracker); // Important
       model.fetch({ success: this, error: this });
     },
     function createUserIfNecessary(model, request, options) {
@@ -79,44 +79,41 @@ function setupUser(id, port, callback) {
       }
     },
     function startTheServer(model) {
-      model.setTracker(tracker); // Important
       model.startServer();
       callback(model);
     }
   );
 }
 
-function setupTracker(user1, user2) {
-  global_users = [user1, user2]
-  tracker.connect(function(){
-    user1.listen(function(err){
-      if (err) {
-        throw err;
-      }
-      // at this point announcing is done
+function setupTest(user1, user2) {
+  global_users = [user1, user2];
+  user1.listen(function(err){
+    if (err) {
+      throw err;
+    }
+    // at this point announcing is done
 
 
-      tracker.findUser(user1.myKey.fingerprint(), function(){
-        console.log('found user:', arguments);
-      });
-
-      /*
-      user1.on('new_friend', function(friend) {
-        console.log(friend, 'new friend');
-        friend.socket.on('msg', function(){console.log(arguments);});
-      });
-      user1.on('connection', function(friend) {
-        console.log(friend, 'connection');
-        friend.socket.on('msg', function(){console.log(arguments);});
-      });
-      */
-
-      if (user2) {
-        user2.findAndAddFriend(user1.myKey.fingerprint(), function() {
-          user2.sendPrivateMessage(user2.friends.get(user1.myKey.fingerprint()), new Message({ message: 'hello' }));
-        });
-      }
+    tracker.findUser(user1.myKey.fingerprint(), function(){
+      console.log('found user:', arguments);
     });
+
+    /*
+    user1.on('new_friend', function(friend) {
+      console.log(friend, 'new friend');
+      friend.socket.on('msg', function(){console.log(arguments);});
+    });
+    user1.on('connection', function(friend) {
+      console.log(friend, 'connection');
+      friend.socket.on('msg', function(){console.log(arguments);});
+    });
+    */
+
+    if (user2) {
+      user2.findAndAddFriend(user1.myKey.fingerprint(), function() {
+        user2.sendPrivateMessage(user2.friends.get(user1.myKey.fingerprint()), new Message({ message: 'hello' }));
+      });
+    }
   });
 }
 
@@ -141,20 +138,25 @@ function setupUI(user) {
 function setup() {
   var user1 = null;
   Step(
+    function(){
+      tracker.connect(function(){
+        this(arguments);
+      }.bind(this));
+    },
     function() {
-      setupUser(MY_ID, 34562, this);
+      setupUser(MY_ID, this);
     },
     function(user_model) {
       user1 = user_model;
       if (TESTING) {
-        setupUser(HIS_ID, 34563, this);
+        setupUser(HIS_ID, this);
       } else  {
         return null;
       }
     },
     function(user_model) {
       setupUI(user1);
-      setupTracker(user1, user_model);
+      setupTest(user1, user_model);
     }
   );
 }

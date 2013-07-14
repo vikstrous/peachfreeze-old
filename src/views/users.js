@@ -24,7 +24,6 @@
     },
 
     render: function() {
-      console.log('render users', this.collection);
       if(this.addingContact === false){
         $('#contacts-column .PopupContainer').fadeOut("slow");
         $('#contacts-button').html("Add A Contact");
