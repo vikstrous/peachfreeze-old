@@ -49,7 +49,7 @@
     this.image = image;
     this.about = about;
     this.details = details;
-    this.statss = stats;
+    this.stats = stats;
   }
 
   var OTRFriend = Backbone.Model.extend({
@@ -62,6 +62,7 @@
         port: '',
         fp: '',
         accepted: false,
+        connected: false,
         profile: new Profile()
       };
     },
@@ -71,32 +72,31 @@
 
       this.socket.connect(function(err) {
         if(err) {
-          console.error(this);
-          throw err;
-        }
-
-        var buddy = this.socket.pipeline[3].buddy;
-
-        var theRest = function(){
-          var fp = buddy.their_priv_pk.fingerprint();
-          this.key = buddy.their_priv_pk;
-
-          console.log('connected to friend');
-        }.bind(this);
-
-        if(buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED){
-          var otr_cb = function (state) {
-            if(state === OTR.CONST.STATUS_AKE_SUCCESS){
-              theRest();
-              buddy.off('status', otr_cb);
-            }
-          };
-          buddy.on('status', otr_cb);
+          this.set('connected', false);
         } else {
-          theRest();
-        }
-        buddy.sendQueryMsg();
 
+          var buddy = this.socket.pipeline[3].buddy;
+
+          var theRest = function(){
+            var fp = buddy.their_priv_pk.fingerprint();
+            this.myKey = buddy.their_priv_pk;
+            this.set('connected', true);
+            console.log('connected to friend');
+          }.bind(this);
+
+          if(buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED){
+            var otr_cb = function (state) {
+              if(state === OTR.CONST.STATUS_AKE_SUCCESS){
+                theRest();
+                buddy.off('status', otr_cb);
+              }
+            };
+            buddy.on('status', otr_cb);
+          } else {
+            theRest();
+          }
+          buddy.sendQueryMsg();
+        }
       }.bind(this));
     },
 
@@ -123,16 +123,23 @@
       var friendsOptions = this.getPersistOptions();
       friendsOptions.success = function(collection, friends, options){
         collection.map(function(friend){
+          friend.set('connected', false);
           this.tracker.findUser(friend.get('fp'), function(res){
-            console.log(res, 'res');
-            var key = this.myKey;
-            var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(key), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
-            friend.socket = new Socket(res.ip, res.port, pipeline);
-            friend.connect(function(){
-              console.log('friend connected!!! listening and sending profile');
-              this.listenOnFriend(friend);
-              this.sendProfileToFriend(friend);
-            }.bind(this));
+            if(!res){
+              console.error('friend offline', friend);
+            } else {
+              console.log(res, 'res');
+              var key = this.myKey;
+              var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(key), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
+              friend.socket = new Socket(res.ip, res.port, pipeline);
+              friend.connect(function(){
+                console.error('friend online', friend);
+                friend.set('connected', true);
+                console.log('friend connected!!! listening and sending profile');
+                this.listenOnFriend(friend);
+                this.sendProfileToFriend(friend);
+              }.bind(this));
+            }
           }.bind(this));
         }.bind(this));
       }.bind(this);
@@ -159,6 +166,7 @@
       if (!key) {
         this.myKey = new DSA();
       } else if (typeof key === 'string') {
+        console.error('PARSING KEY FROM STRING ' +key);
         this.myKey = DSA.parsePrivate(key);
       } else {
         this.myKey = key;
@@ -171,6 +179,7 @@
       var pipeline = function(){
         return [new EventToObject(), new ObjectToString(), new OTRPipe(key), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];
       };
+      console.log(this);
       console.log('Starting server on ' + this.get('host') + ':' + this.get('port'));
       this.server = new SocketServer(this.get('host'), this.get('port'), pipeline);
       this.server.on('connection', this._onconnection.bind(this));
@@ -185,29 +194,42 @@
       var theRest = function(){
         var fp = buddy.their_priv_pk.fingerprint();
         var friend;
+        console.log('FINDING FRIEND');
+        console.log(fp);
+        console.log(this.friends);
+        console.log(this.friends.get(fp));
         if(!this.friends.get(fp)){
+          console.log('new friend');
           // new friend
-          friend = new OTRFriend({
-            host: otr_socket.host,
-            port: otr_socket.port,
-            fp: fp
-          });
-          friend.key = buddy.their_priv_pk;
-          friend.socket = otr_socket;
-          this.friends.add(friend);
-          friend.save(null, this.getPersistOptions());
-          this.listenOnFriend(friend);
-          this.sendProfileToFriend(friend); // TODO - don't send this until you confirm
+          this.tracker.findUser(fp, function(res){
+            friend = new OTRFriend({
+              host: res.ip,
+              port: res.port,
+              fp: fp,
+              connected: true
+            });
+            friend.myKey = buddy.their_priv_pk;
+            friend.socket = otr_socket;
+            this.friends.add(friend);
+            friend.save(null, this.getPersistOptions());
+            this.listenOnFriend(friend);
+            this.sendProfileToFriend(friend); // TODO - don't send this until you confirm
+
+            console.error('friend online 4', friend);
+            friend.set('connected', true);
+            this.trigger('connection', friend);
+          }.bind(this));
         } else {
           // old friend (loaded form storage)
+          console.log('old friend');
           friend = this.friends.get(fp);
-          this.friend.socket = otr_socket;
+          friend.socket = otr_socket;
           this.listenOnFriend(friend);
           this.sendProfileToFriend(friend);
+          console.error('friend online 2', friend);
+          friend.set('connected', true);
+          this.trigger('connection', friend);
         }
-        console.log('friend connected', friend);
-        friend.set('connected', true);
-        this.trigger('connection', friend);
       }.bind(this);
 
       if(buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED){
@@ -221,7 +243,7 @@
       } else {
         theRest();
       }
-      buddy.sendQueryMsg()
+      buddy.sendQueryMsg();
     },
 
     listen: function(cb) {
@@ -242,25 +264,55 @@
     },
 
     addFriend: function(host, port, fp, cb) {
-      var id = this.friends.length;
-      var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(this.myKey), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
-      var friend = new OTRFriend({
-        host: host,
-        port: port,
-        fp: fp,
-        accepted: true
-      });
-      friend.socket = new Socket(host, port, pipeline);
-      // Add key?
-      this.friends.add(friend);
-      friend.save(null, this.getPersistOptions());
-      this.listenOnFriend(friend);
-      friend.socket.connect(function() {
-        console.error(arguments);
-        this.sendProfileToFriend(friend);
-        this.trigger('new_friend', friend);
-        if(typeof cb == 'function') cb(fp);
-      }.bind(this));
+      if(!this.friends.get(fp)){
+        var key = this.myKey;
+        var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(key), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
+        var friend = new OTRFriend({
+          host: host,
+          port: port,
+          fp: fp,
+          accepted: true,
+          connected: false
+        });
+        friend.set('connected', false);
+        friend.socket = new Socket(host, port, pipeline);
+        // Add key?
+        this.friends.add(friend);
+        friend.save(null, this.getPersistOptions());
+        this.listenOnFriend(friend);
+        friend.socket.connect(function(err) {
+          if(err) {
+            console.log('friend offline 3');
+            throw err;
+          }
+          console.error('friend online 3', friend);
+          friend.set('connected', true);
+
+          var buddy = friend.socket.pipeline[3].buddy;
+
+          var theRest = function() {
+            this.sendProfileToFriend(friend);
+            this.trigger('new_friend', friend);
+            if(typeof cb == 'function') cb(fp);
+          }.bind(this);
+
+          if(buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED){
+            var cb2 = function (state) {
+              if(state === OTR.CONST.STATUS_AKE_SUCCESS){
+                theRest();
+                buddy.off('status', cb2);
+              }
+            };
+            buddy.on('status', cb2);
+          } else {
+            theRest();
+          }
+          buddy.sendQueryMsg();
+
+        }.bind(this));
+      } else {
+        console.log("adding an existing friend");
+      }
     },
 
     listenOnFriend: function(friend) {

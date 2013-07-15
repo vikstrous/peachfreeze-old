@@ -1,4 +1,4 @@
-var TESTING = false;
+var TESTING = true;
 
 var tracker = new TrackerConnection('127.0.0.1', 1337);
 var global_users = [];
@@ -41,14 +41,18 @@ function getOrGenKey(name, cb){
     var got_key = data[name];
     if (got_key) {
       myKey = DSA.parsePrivate(got_key);
+      console.log("LOADED KEY "+ myKey.fingerprint());
+      cb(myKey);
     } else {
       console.log('Generating DSA');
       myKey = new DSA();
       var data2 = {};
       data2[name] = myKey.packPrivate();
-      chrome.storage.local.set(data2, function() {});
+      chrome.storage.local.set(data2, function() {
+        console.log("GENERATED KEY "+ myKey.fingerprint());
+        cb(myKey);
+      });
     }
-    cb(myKey);
   });
 }
 
@@ -64,17 +68,15 @@ function setupUser(id, callback) {
       model = new OTRUser({id: id});
       model.setKey(key);
       model.setTracker(tracker); // Important
-      model.fetch({ success: this, error: this });
+      model.fetch({key_suffix: ('_' + id),  success: this, error: this });
     },
     function createUserIfNecessary(model, request, options) {
       if (options.error_msg) {
         console.log('Creating new user');
         model.set('host', '0.0.0.0');
         model.set('port', port);
-        model.save(null, { success: this, error: this });
+        model.save(null, {key_suffix: ('_' + id), success: this, error: this });
       } else {
-        console.log('Retrieved user from local storage');
-        console.log(model);
         this(model);
       }
     },
@@ -110,8 +112,11 @@ function setupTest(user1, user2) {
     */
 
     if (user2) {
-      user2.findAndAddFriend(user1.myKey.fingerprint(), function() {
-        user2.sendPrivateMessage(user2.friends.get(user1.myKey.fingerprint()), new Message({ message: 'hello' }));
+    user2.listen(function(err){
+        if(err) throw err;
+        user2.findAndAddFriend(user1.myKey.fingerprint(), function() {
+          user2.sendPrivateMessage(user2.friends.get(user1.myKey.fingerprint()), new Message({ message: 'hello' }));
+        });
       });
     }
   });

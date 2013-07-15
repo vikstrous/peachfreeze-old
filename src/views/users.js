@@ -38,13 +38,13 @@
       for(var c in models){
         var user = models[c];
         var $contact_ele_tpl = $($('#contact-tpl').html());
-        console.log(user);
+        console.log(user, 'REDNERING');
         var profile = user.get('profile');
         if(profile){
-          $contact_ele_tpl.find('.Name').text(profile.name);
+          $contact_ele_tpl.find('.Name').text(profile.name + (user.get('connected') ? ' + ' : ' - ') + user.get('fp').substr(0,2));
           $contact_ele_tpl.find('.Image').attr('src', profile.image);
         } else {
-          $contact_ele_tpl.find('.Name').text('Anonymous');
+          $contact_ele_tpl.find('.Name').text('Anonymous' + (user.get('connected') ? ' + ' : ' - ') + user.get('fp').substr(0,2));
         }
         $container.append($contact_ele_tpl);
       }
