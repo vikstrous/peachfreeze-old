@@ -1,4 +1,4 @@
-var TESTING = true;
+var TESTING = false;
 
 var tracker = new TrackerConnection('127.0.0.1', 1337);
 var global_users = [];
