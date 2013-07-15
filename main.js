@@ -1,6 +1,6 @@
 var TESTING = false;
 
-var tracker = new TrackerConnection('127.0.0.1', 1337);
+var tracker = new TrackerConnection('me.viktorstanchev.com', 1337);
 var global_users = [];
 
 var MY_ID = 1;
