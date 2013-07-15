@@ -1,9 +1,9 @@
 [submodule "lib/otrsocket.js"]
 	path = lib/otrsocket.js
-	url = git@github.com:/vikstrous/otrsocket.js.git
+	url = https://github.com/vikstrous/otrsocket.js.git
 [submodule "tracker/lib/otrsocket.js"]
 	path = tracker/lib/otrsocket.js
-	url = git@github.com:vikstrous/otrsocket.js.git
+	url = https://github.com/vikstrous/otrsocket.js.git
 [submodule "lib/backbone"]
 	path = lib/backbone
 	url = https://github.com/jashkenas/backbone.git
