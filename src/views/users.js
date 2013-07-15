@@ -82,7 +82,7 @@
         this.model.set('profile', prof);
         this.model.trigger('change:profile');
         this.model.trigger('change');
-        this.model.save();
+        this.model.save(null, this.model.getPersistOptions());
       } else {
 		$('#profile-info-edit').css("display", "block");
         this.model.trigger('change:profile');
