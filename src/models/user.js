@@ -1,5 +1,6 @@
 //TODO: multiple types of events
-;(function(exports){
+;
+(function(exports) {
   var util = {
     inherits: function(ctor, superCtor) {
       ctor.super_ = superCtor;
@@ -31,16 +32,20 @@
 
   util.inherits(TrackerConnection, EventEmitter);
 
-  TrackerConnection.prototype.connect = function(){
+  TrackerConnection.prototype.connect = function() {
     this.socket.connect.apply(this.socket, arguments);
   };
 
-  TrackerConnection.prototype.announce = function(ip, port, fp, cb){
+  TrackerConnection.prototype.announce = function(ip, port, fp, cb) {
     //TODO: implement fingerprint verification; also tracker authentication
-    this.socket.send('announce', {fp: fp, ip:ip, port:port}, cb);
+    this.socket.send('announce', {
+      fp: fp,
+      ip: ip,
+      port: port
+    }, cb);
   };
 
-  TrackerConnection.prototype.findUser = function(fp, cb){
+  TrackerConnection.prototype.findUser = function(fp, cb) {
     this.socket.send('read', fp, cb);
   };
 
@@ -71,22 +76,22 @@
       console.log('connecting to friend');
 
       this.socket.connect(function(err) {
-        if(err) {
+        if (err) {
           this.set('connected', false);
         } else {
 
           var buddy = this.socket.pipeline[3].buddy;
 
-          var theRest = function(){
+          var theRest = function() {
             var fp = buddy.their_priv_pk.fingerprint();
             this.myKey = buddy.their_priv_pk;
             this.set('connected', true);
             console.log('connected to friend');
           }.bind(this);
 
-          if(buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED){
-            var otr_cb = function (state) {
-              if(state === OTR.CONST.STATUS_AKE_SUCCESS){
+          if (buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED) {
+            var otr_cb = function(state) {
+              if (state === OTR.CONST.STATUS_AKE_SUCCESS) {
                 theRest();
                 buddy.off('status', otr_cb);
               }
@@ -121,18 +126,20 @@
     initialize: function() {
       this.friends = new OTRFriends();
       var friendsOptions = this.getPersistOptions();
-      friendsOptions.success = function(collection, friends, options){
-        collection.map(function(friend){
+      friendsOptions.success = function(collection, friends, options) {
+        collection.map(function(friend) {
           friend.set('connected', false);
-          this.tracker.findUser(friend.get('fp'), function(res){
-            if(!res){
+          this.tracker.findUser(friend.get('fp'), function(res) {
+            if (!res) {
               console.error('friend offline', friend);
             } else {
               console.log(res, 'res');
               var key = this.myKey;
-              var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(key), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
+              var pipeline = function() {
+                return [new EventToObject(), new ObjectToString(), new OTRPipe(key), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];
+              };
               friend.socket = new Socket(res.ip, res.port, pipeline);
-              friend.connect(function(){
+              friend.connect(function() {
                 console.error('friend online', friend);
                 friend.set('connected', true);
                 console.log('friend connected!!! listening and sending profile');
@@ -146,7 +153,7 @@
       this.friends.fetch(friendsOptions);
       this.messages = new Messages();
       this.messages.fetch(this.getPersistOptions());
-      this.listenTo(this, 'change:profile', function(){
+      this.listenTo(this, 'change:profile', function() {
         this.friends.map(function(friend) {
           this.sendProfileToFriend(friend);
         }.bind(this));
@@ -155,7 +162,9 @@
     },
 
     getPersistOptions: function() {
-      return { key_suffix: ('_' + this.get('id')) };
+      return {
+        key_suffix: ('_' + this.get('id'))
+      };
     },
 
     setTracker: function(t) {
@@ -166,7 +175,7 @@
       if (!key) {
         this.myKey = new DSA();
       } else if (typeof key === 'string') {
-        console.error('PARSING KEY FROM STRING ' +key);
+        console.error('PARSING KEY FROM STRING ' + key);
         this.myKey = DSA.parsePrivate(key);
       } else {
         this.myKey = key;
@@ -176,7 +185,7 @@
 
     startServer: function() {
       var key = this.myKey;
-      var pipeline = function(){
+      var pipeline = function() {
         return [new EventToObject(), new ObjectToString(), new OTRPipe(key), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];
       };
       console.log(this);
@@ -191,17 +200,17 @@
       //TODO: find a less hacky way to access the buddy object
       var buddy = otr_socket.pipeline[3].buddy;
 
-      var theRest = function(){
+      var theRest = function() {
         var fp = buddy.their_priv_pk.fingerprint();
         var friend;
         console.log('FINDING FRIEND');
         console.log(fp);
         console.log(this.friends);
         console.log(this.friends.get(fp));
-        if(!this.friends.get(fp)){
+        if (!this.friends.get(fp)) {
           console.log('new friend');
           // new friend
-          this.tracker.findUser(fp, function(res){
+          this.tracker.findUser(fp, function(res) {
             friend = new OTRFriend({
               host: res.ip,
               port: res.port,
@@ -232,9 +241,9 @@
         }
       }.bind(this);
 
-      if(buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED){
-        var cb = function (state) {
-          if(state === OTR.CONST.STATUS_AKE_SUCCESS){
+      if (buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED) {
+        var cb = function(state) {
+          if (state === OTR.CONST.STATUS_AKE_SUCCESS) {
             theRest();
             buddy.off('status', cb);
           }
@@ -247,26 +256,28 @@
     },
 
     listen: function(cb) {
-      this.server.listen(function(res){
+      this.server.listen(function(res) {
         console.log('announcing');
-        chrome.socket.getNetworkList(function(interfaces){
-          this.tracker.announce(interfaces[1].address, this.server.port, this.myKey.fingerprint(), function(res){
-            if(typeof cb == 'function') cb();
+        chrome.socket.getNetworkList(function(interfaces) {
+          this.tracker.announce(interfaces[1].address, this.server.port, this.myKey.fingerprint(), function(res) {
+            if (typeof cb == 'function') cb();
           });
         }.bind(this));
       }.bind(this));
     },
 
     findAndAddFriend: function(fp, cb) {
-      this.tracker.findUser(fp, function(res){
+      this.tracker.findUser(fp, function(res) {
         this.addFriend(res.ip, res.port, res.fp, cb);
       }.bind(this));
     },
 
     addFriend: function(host, port, fp, cb) {
-      if(!this.friends.get(fp)){
+      if (!this.friends.get(fp)) {
         var key = this.myKey;
-        var pipeline = function(){return [new EventToObject(), new ObjectToString(), new OTRPipe(key), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];};
+        var pipeline = function() {
+          return [new EventToObject(), new ObjectToString(), new OTRPipe(key), new BufferDefragmenterStage1(), new StringToBuffer(), new BufferDefragmenter2()];
+        };
         var friend = new OTRFriend({
           host: host,
           port: port,
@@ -281,7 +292,7 @@
         friend.save(null, this.getPersistOptions());
         this.listenOnFriend(friend);
         friend.socket.connect(function(err) {
-          if(err) {
+          if (err) {
             console.log('friend offline 3');
             throw err;
           }
@@ -293,12 +304,12 @@
           var theRest = function() {
             this.sendProfileToFriend(friend);
             this.trigger('new_friend', friend);
-            if(typeof cb == 'function') cb(fp);
+            if (typeof cb == 'function') cb(fp);
           }.bind(this);
 
-          if(buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED){
-            var cb2 = function (state) {
-              if(state === OTR.CONST.STATUS_AKE_SUCCESS){
+          if (buddy.msgstate !== OTR.CONST.MSGSTATE_ENCRYPTED) {
+            var cb2 = function(state) {
+              if (state === OTR.CONST.STATUS_AKE_SUCCESS) {
                 theRest();
                 buddy.off('status', cb2);
               }

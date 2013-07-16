@@ -9,9 +9,9 @@
       $('#contacts-button').click(this.contacts_click.bind(this));
     },
 
-    contacts_click: function(){
+    contacts_click: function() {
       this.addingContact = !this.addingContact;
-      if(!this.addingContact){
+      if (!this.addingContact) {
         $('#contacts-button').html("Add A Contact");
         this.user.findAndAddFriend($('#new-contact-input').val());
       } else {
@@ -24,7 +24,7 @@
     },
 
     render: function() {
-      if(this.addingContact === false){
+      if (this.addingContact === false) {
         $('#contacts-column .PopupContainer').fadeOut("slow");
         $('#contacts-button').html("Add A Contact");
       } else {
@@ -35,16 +35,16 @@
       $container.empty();
       var models = this.collection.models;
 
-      for(var c in models){
+      for (var c in models) {
         var user = models[c];
         var $contact_ele_tpl = $($('#contact-tpl').html());
         console.log(user, 'REDNERING');
         var profile = user.get('profile');
-        if(profile){
-          $contact_ele_tpl.find('.Name').text(profile.name + (user.get('connected') ? ' + ' : ' - ') + user.get('fp').substr(0,2));
+        if (profile) {
+          $contact_ele_tpl.find('.Name').text(profile.name + (user.get('connected') ? ' + ' : ' - ') + user.get('fp').substr(0, 2));
           $contact_ele_tpl.find('.Image').attr('src', profile.image);
         } else {
-          $contact_ele_tpl.find('.Name').text('Anonymous' + (user.get('connected') ? ' + ' : ' - ') + user.get('fp').substr(0,2));
+          $contact_ele_tpl.find('.Name').text('Anonymous' + (user.get('connected') ? ' + ' : ' - ') + user.get('fp').substr(0, 2));
         }
         $container.append($contact_ele_tpl);
       }
@@ -61,30 +61,30 @@
       $('#profile-info-edit').click(this.upload_click.bind(this));
     },
 
-    upload_click: function(){
-      if(this.edit_mode){
-        uploadProfileImage(function(img){
+    upload_click: function() {
+      if (this.edit_mode) {
+        uploadProfileImage(function(img) {
           this.preview = img;
           $('#profile-container .ProfileImage').attr('src', this.preview || '');
         }.bind(this));
       }
     },
 
-    edit_click: function(){
+    edit_click: function() {
       this.edit_mode = !this.edit_mode;
-      if(!this.edit_mode){
+      if (!this.edit_mode) {
         var prof = this.model.get('profile');
         prof.name = $('#profile-container .Name input').val();
         prof.epithet = $('#profile-container .Epithet textarea').val();
         prof.description = $('#profile-description textarea').val();
         prof.image = this.preview || prof.image;
-		 $('#profile-info-edit').css("display", "none");
+        $('#profile-info-edit').css("display", "none");
         this.model.set('profile', prof);
         this.model.trigger('change:profile');
         this.model.trigger('change');
         this.model.save(null, this.model.getPersistOptions());
       } else {
-		$('#profile-info-edit').css("display", "block");
+        $('#profile-info-edit').css("display", "block");
         this.model.trigger('change:profile');
         this.model.trigger('change');
       }
@@ -96,12 +96,12 @@
 
       var fingerPrint = this.model.get('fp').match(/.{1,8}/g);
       $profile_container.find(".finger-print").empty();
-      for(var i=0;i<fingerPrint.length;i++){
-        $profile_container.find(".finger-print").append("<div style='background-color: #" + fingerPrint[i].substring(0,6) + "'></div>");
+      for (var i = 0; i < fingerPrint.length; i++) {
+        $profile_container.find(".finger-print").append("<div style='background-color: #" + fingerPrint[i].substring(0, 6) + "'></div>");
       }
       $profile_container.find('.FingerPrint').text(fingerPrint.join(' ').toUpperCase());
 
-      if(!this.edit_mode){
+      if (!this.edit_mode) {
         $profile_container.find('.ProfileInfoArea>a').removeAttr('href');
         $profile_container.find('.ProfileImage').attr('src', profile.image || '');
         $profile_container.find('.Name').empty().text(profile.name || '');

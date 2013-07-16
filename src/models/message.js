@@ -10,8 +10,7 @@
       date: (new Date()).toLocaleString()
     },
 
-    initialize: function() {
-    }
+    initialize: function() {}
   });
 
   var Messages = Backbone.Collection.extend({

@@ -10,11 +10,15 @@ document.querySelector('#choose_file').addEventListener('click', function(e) {
   uploadProfileImage();
 });
 
-function uploadProfileImage(cb){
-  chrome.fileSystem.chooseEntry({type: 'openFile', accepts: [{
-    //mimeTypes: ['text/*'],
-    extensions: ['jpg', 'png', 'gif']
-  }]},function(readOnlyEntry) {
+function uploadProfileImage(cb) {
+  chrome.fileSystem.chooseEntry({
+    type: 'openFile',
+    accepts: [{
+        //mimeTypes: ['text/*'],
+        extensions: ['jpg', 'png', 'gif']
+      }
+    ]
+  }, function(readOnlyEntry) {
     if (!readOnlyEntry) {
       // user cancelled
       return;
@@ -22,7 +26,7 @@ function uploadProfileImage(cb){
     readOnlyEntry.file(function(file) {
       var reader = new FileReader();
 
-      reader.onerror = function(){
+      reader.onerror = function() {
         console.error(arguments);
       };
       reader.onload = function(e) {
@@ -35,13 +39,13 @@ function uploadProfileImage(cb){
 }
 
 
-function getOrGenKey(name, cb){
+function getOrGenKey(name, cb) {
   chrome.storage.local.get(name, function(data) {
     var myKey;
     var got_key = data[name];
     if (got_key) {
       myKey = DSA.parsePrivate(got_key);
-      console.log("LOADED KEY "+ myKey.fingerprint());
+      console.log("LOADED KEY " + myKey.fingerprint());
       cb(myKey);
     } else {
       console.log('Generating DSA');
@@ -49,7 +53,7 @@ function getOrGenKey(name, cb){
       var data2 = {};
       data2[name] = myKey.packPrivate();
       chrome.storage.local.set(data2, function() {
-        console.log("GENERATED KEY "+ myKey.fingerprint());
+        console.log("GENERATED KEY " + myKey.fingerprint());
         cb(myKey);
       });
     }
@@ -59,44 +63,49 @@ function getOrGenKey(name, cb){
 function setupUser(id, callback) {
   // TODO use first argument as error model
   // TODO: deal with port already taken exceptions
-  var port = parseInt(32000+Math.random()*1000, 10);
-  Step(
-    function genKey() {
-      getOrGenKey('dsaKey' + id, this);
-    },
-    function saveFingerPrint(key) {
-      model = new OTRUser({id: id});
-      model.setKey(key);
-      model.setTracker(tracker); // Important
-      model.fetch({key_suffix: ('_' + id),  success: this, error: this });
-    },
-    function createUserIfNecessary(model, request, options) {
-      if (options.error_msg) {
-        console.log('Creating new user');
-        model.set('host', '0.0.0.0');
-        model.set('port', port);
-        model.save(null, {key_suffix: ('_' + id), success: this, error: this });
-      } else {
-        this(model);
-      }
-    },
-    function startTheServer(model) {
-      model.startServer();
-      callback(model);
+  var port = parseInt(32000 + Math.random() * 1000, 10);
+  Step(function genKey() {
+    getOrGenKey('dsaKey' + id, this);
+  }, function saveFingerPrint(key) {
+    model = new OTRUser({
+      id: id
+    });
+    model.setKey(key);
+    model.setTracker(tracker); // Important
+    model.fetch({
+      key_suffix: ('_' + id),
+      success: this,
+      error: this
+    });
+  }, function createUserIfNecessary(model, request, options) {
+    if (options.error_msg) {
+      console.log('Creating new user');
+      model.set('host', '0.0.0.0');
+      model.set('port', port);
+      model.save(null, {
+        key_suffix: ('_' + id),
+        success: this,
+        error: this
+      });
+    } else {
+      this(model);
     }
-  );
+  }, function startTheServer(model) {
+    model.startServer();
+    callback(model);
+  });
 }
 
 function setupTest(user1, user2) {
   global_users = [user1, user2];
-  user1.listen(function(err){
+  user1.listen(function(err) {
     if (err) {
       throw err;
     }
     // at this point announcing is done
 
 
-    tracker.findUser(user1.myKey.fingerprint(), function(){
+    tracker.findUser(user1.myKey.fingerprint(), function() {
       console.log('found user:', arguments);
     });
 
@@ -112,10 +121,12 @@ function setupTest(user1, user2) {
     */
 
     if (user2) {
-    user2.listen(function(err){
-        if(err) throw err;
+      user2.listen(function(err) {
+        if (err) throw err;
         user2.findAndAddFriend(user1.myKey.fingerprint(), function() {
-          user2.sendPrivateMessage(user2.friends.get(user1.myKey.fingerprint()), new Message({ message: 'hello' }));
+          user2.sendPrivateMessage(user2.friends.get(user1.myKey.fingerprint()), new Message({
+            message: 'hello'
+          }));
         });
       });
     }
@@ -123,7 +134,9 @@ function setupTest(user1, user2) {
 }
 
 function setupUI(user) {
-  var pv = new ProfileView({ model:user });
+  var pv = new ProfileView({
+    model: user
+  });
   pv.render();
 
   /*
@@ -131,39 +144,39 @@ function setupUI(user) {
   mc.reset([{sender:'title', message: 'text'}, {sender:'ti2tle', message: 'tex2t'}]);
   */
 
-  var uv = new UsersView({collection: user.friends, user: user});
+  var uv = new UsersView({
+    collection: user.friends,
+    user: user
+  });
   uv.render();
 
   var mc = user.messages;
 
-  var mv = new MessagesView({ collection: mc, user: user });
+  var mv = new MessagesView({
+    collection: mc,
+    user: user
+  });
   mv.render();
 }
 
 function setup() {
   var user1 = null;
-  Step(
-    function(){
-      tracker.connect(function(){
-        this(arguments);
-      }.bind(this));
-    },
-    function() {
-      setupUser(MY_ID, this);
-    },
-    function(user_model) {
-      user1 = user_model;
-      if (TESTING) {
-        setupUser(HIS_ID, this);
-      } else  {
-        return null;
-      }
-    },
-    function(user_model) {
-      setupUI(user1);
-      setupTest(user1, user_model);
+  Step(function() {
+    tracker.connect(function() {
+      this(arguments);
+    }.bind(this));
+  }, function() {
+    setupUser(MY_ID, this);
+  }, function(user_model) {
+    user1 = user_model;
+    if (TESTING) {
+      setupUser(HIS_ID, this);
+    } else {
+      return null;
     }
-  );
+  }, function(user_model) {
+    setupUI(user1);
+    setupTest(user1, user_model);
+  });
 }
 setup();
-

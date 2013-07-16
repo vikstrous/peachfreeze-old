@@ -53,7 +53,7 @@
           options.success();
         });
       } else if (method == 'read') {
-        var models_data = _.map(array, function (m) {
+        var models_data = _.map(array, function(m) {
           return JSON.parse(m);
         });
         console.log(array, 'ARRAY');
