@@ -10,6 +10,7 @@
   "permissions": [{
     "fileSystem": ["write"]
   },
+  "videoCapture",
   "storage",
   {
     "socket": [

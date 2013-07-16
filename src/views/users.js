@@ -58,15 +58,33 @@
       this.listenTo(this.model, 'add change', this.render);
       this.edit_mode = false;
       $('#profile-button').click(this.edit_click.bind(this));
-      $('#profile-info-edit').click(this.upload_click.bind(this));
+      $('video.profile-info-edit').click(this.upload_click.bind(this));
+      document.querySelector('video').addEventListener('click', this.take_picture.bind(this), false);
     },
 
     upload_click: function() {
       if (this.edit_mode) {
-        uploadProfileImage(function(img) {
-          this.preview = img;
-          $('#profile-container .ProfileImage').attr('src', this.preview || '');
-        }.bind(this));
+        // uploadProfileImage(function(img) {
+        //   this.preview = img;
+        //   $('#profile-container .ProfileImage').attr('src', this.preview || '');
+        // }.bind(this));
+      }
+    },
+
+    take_picture: function(){
+      if (this.stream) {
+        var canvas = document.querySelector('canvas');
+        var ctx = canvas.getContext('2d');
+        $('canvas.profile-info-edit').show();
+        var video = document.querySelector('video');
+        ctx.drawImage(video, 0, 20, 300, 110);
+        // "image/webp" works in Chrome 18. In other browsers, this will fall back to image/png.
+        var img = canvas.toDataURL('image/webp');
+        this.preview = img;
+        $('#profile-container .ProfileImage').attr('src', this.preview || '');
+        $('video.profile-info-edit').hide();
+        video.pause();
+        this.stream.stop();
       }
     },
 
@@ -78,13 +96,19 @@
         prof.epithet = $('#profile-container .Epithet textarea').val();
         prof.description = $('#profile-description textarea').val();
         prof.image = this.preview || prof.image;
-        $('#profile-info-edit').css("display", "none");
+        $('.profile-info-edit').hide();
         this.model.set('profile', prof);
         this.model.trigger('change:profile');
         this.model.trigger('change');
         this.model.save(null, this.model.getPersistOptions());
       } else {
-        $('#profile-info-edit').css("display", "block");
+        navigator.webkitGetUserMedia({video: true}, function(stream) {
+          this.stream = stream;
+          document.querySelector('video').src = webkitURL.createObjectURL(stream);
+        }.bind(this), function(e) {
+          console.error(e);
+        });
+        $('video.profile-info-edit').show();
         this.model.trigger('change:profile');
         this.model.trigger('change');
       }
