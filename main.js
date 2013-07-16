@@ -6,10 +6,6 @@ var global_users = [];
 var MY_ID = 1;
 var HIS_ID = 2;
 
-document.querySelector('#choose_file').addEventListener('click', function(e) {
-  uploadProfileImage();
-});
-
 function uploadProfileImage(cb) {
   chrome.fileSystem.chooseEntry({
     type: 'openFile',
@@ -180,3 +176,36 @@ function setup() {
   });
 }
 setup();
+
+
+// HACKS:
+$(function() {
+  $('.Epithet').dotdotdot();
+
+  var fadeInEverything = function() {
+    $("#profile-column").hide();
+    $("#broadcast-column").hide();
+    $("#contacts-column").hide();
+    $("#profile-column").fadeIn("slow", function() {
+      $("#broadcast-column").fadeIn("slow", function() {
+        $("#contacts-column").fadeIn("slow");
+      });
+    });
+  };
+
+  fadeInEverything();
+
+  var updateBubbleAnimation = function() {
+    $("#peachfreeze .BubbleContainer").hover(function() {
+      $(this).stop().animate({
+        backgroundColor: "#69F"
+      }, 200);
+    }, function() {
+      $(this).stop().animate({
+        backgroundColor: "#F93"
+      }, 200);
+    });
+  };
+
+  updateBubbleAnimation();
+});

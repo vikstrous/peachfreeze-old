@@ -1,43 +1,56 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
-    <title>Stuff</title>
+    <meta charset="utf-8">
+    <title>
+      Stuff
+    </title>
     <link rel="shortcut icon" href="app/favicon.ico">
-    <link rel="stylesheet" href="styles/styles.css">
-    <link rel="stylesheet" href="styles/widgets.css">
-    <script src="scripts/underscore.js"></script>
-    <script src="lib/step/step.js"></script>
-    <script src="scripts/jQuery.js"></script>
-    <script src="scripts/jquery.dotdotdot-1.5.9.min.js"></script>
-    <script src="lib/backbone/backbone.js"></script>
-    <script src="jquery-color-master/jquery.color.js"></script>
-    <script src="scripts/main.js"></script>
-    <script src="lib/otrsocket.js/build/otrsocket.js"></script>
-    <script src="lib/underscore/underscore-min.js"></script>
-    <script src="src/models/user.js"></script>
-    <script src="src/models/message.js"></script>
-    <script src="src/views/users.js"></script>
-    <script src="src/views/messages.js"></script>
-    <script src="src/sync.js"></script>
+    <link rel="stylesheet" href="styles/styles.css" type="text/css">
+    <link rel="stylesheet" href="styles/widgets.css" type="text/css">
+    <script src="lib/underscore/underscore-min.js" type="text/javascript"></script>
+    <script src="lib/jquery/jquery.js" type="text/javascript"></script>
+    <script src="lib/jquery/jquery.dotdotdot-1.5.9.min.js" type="text/javascript"></script>
+    <script src="lib/jquery/jquery.color.js" type="text/javascript"></script>
+    <script src="lib/backbone/backbone.js" type="text/javascript"></script>
+    <script src="lib/step/step.js" type="text/javascript"></script>
+    <script src="lib/otrsocket.js/build/otrsocket.js" type="text/javascript"></script>
+    <script src="src/models/user.js" type="text/javascript"></script>
+    <script src="src/models/message.js" type="text/javascript"></script>
+    <script src="src/views/users.js" type="text/javascript"></script>
+    <script src="src/views/messages.js" type="text/javascript"></script>
+    <script src="src/sync.js" type="text/javascript"></script>
   </head>
-
   <body>
-  	<div class="LogoSection"><div class="LogoPeach"></div><img src="logo.png" class="Logo"><h1>PeachFreeze</h1></div>
+    <div class="LogoSection">
+      <div class="LogoPeach"></div>
+      <img src="logo.png" class="Logo">
+      <h1>
+        PeachFreeze
+      </h1>
+    </div>
     <div id="peachfreeze">
       <div id="profile-column">
-        <h2 class="ColumnHeader">Profile</h2>
-        <div id="profile-button" class="BubbleContainer ColumnButton">Edit Profile</div>
-        <div id="profile-info-edit">Click on this image to upload a new one</div>
+        <h2 class="ColumnHeader">
+          Profile
+        </h2>
+        <div id="profile-button" class="BubbleContainer ColumnButton">
+          Edit Profile
+        </div>
+        <div id="profile-info-edit">
+          Click on this image to upload a new one
+        </div>
         <div style="clear:both"></div>
         <div id="profile-container">
           <div class="ProfileInfoArea">
-            <a>
-                <img src="logo.jpg" class="ProfileImage">
-            </a>
+            <a><img src="logo.jpg" class="ProfileImage"></a>
             <div class="ProfileTextArea">
-              <h2 class="Name">Mike Hawk Ben Dover Irene Dover</h2>
-              <p class="FingerPrint">ABC123AB ABC123AB ABC123AB ABC123AB ABC123AB</p>
+              <h2 class="Name">
+                Loading...
+              </h2>
+              <p class="FingerPrint">
+                ABC123AB ABC123AB ABC123AB ABC123AB ABC123AB
+              </p>
               <div class="finger-print"></div>
               <p class="Epithet"></p>
             </div>
@@ -46,62 +59,61 @@
           <p id="profile-description"></p>
         </div>
       </div>
-
-      <script type="text/template" id="broadcast-tpl">
-        <div class="BubbleContainer BroadcastContainer">
-              <div class="TextArea">
-                <h3 class="Title"></h3>
-                <p class="Time"></p>
-                <div style="clear:both"></div>
-                <p class="Text"></p>
-                <p class="Author"></p>
-                <div style="clear:right"></div>
-              </div>
-              <!--div style="clear:left"></div-->
-            </div>
-      </script>
-
       <div id="broadcast-column">
-        <h2 class="ColumnHeader">Broadcasts</h2>
-        <div id="post-button" class="BubbleContainer ColumnButton">Post A Broadcast</div>
+        <h2 class="ColumnHeader">
+          Broadcasts
+        </h2>
+        <div id="post-button" class="BubbleContainer ColumnButton">
+          Post A Broadcast
+        </div>
         <div style="clear:both"></div>
-		<div id="new-broadcast-container" class="PopupContainer">
-        	<textarea name="new-broadcast" id="new-broadcast-input"></textarea>
+        <div id="new-broadcast-container" class="PopupContainer">
+          <textarea name="new-broadcast" id="new-broadcast-input"></textarea>
         </div>
-        <div id="broadcast-container">
-        </div>
+        <div id="broadcast-container"></div>
       </div>
-
-
-    <script type="text/template" id="contact-tpl">
-      <div class="ContactsPerson">
-        <div class="BubbleContainer">
-          <img src="test/lorum.jpg" class="Image"/>
-          <div class="NameContainer">
-            <h3 class="Name"></h3>
-          </div>
-          <div style="clear:left"></div>
-        </div>
-      </div>
-    </script>
-
       <div id="contacts-column">
-        <h2 class="ColumnHeader">Contacts</h2>
-        <div id="contacts-button" class="BubbleContainer ColumnButton">Add A Contact</div>
+        <h2 class="ColumnHeader">
+          Contacts
+        </h2>
+        <div id="contacts-button" class="BubbleContainer ColumnButton">
+          Add A Contact
+        </div>
         <div style="clear:both"></div>
         <div id="new-contact-container" class="PopupContainer">
-        	<p>Add Your Contact's Fingerprint Below:</p>
-            <input name="new-contact" id="new-contact-input">
+          <p>
+            Add Your Contact's Fingerprint Below:
+          </p>
+          <input name="new-contact" id="new-contact-input">
         </div>
         <div id="contacts-container">
-        	<div class="ContactsPerson">
-      </div>
+          <div class="ContactsPerson"></div>
         </div>
       </div>
       <div style="clear:both"></div>
     </div>
-    <div id="choose_file">UPLOAD IMAGE</div>
-    <script src="main.js"></script>
+    <script src="main.js" type="text/javascript"></script>
+    <script type="text/template" id="contact-tpl"><div class="ContactsPerson">
+      <div class="BubbleContainer">
+      <img src="test/lorum.jpg" class="Image"/>
+      <div class="NameContainer">
+      <h3 class="Name"></h3>
+      </div>
+      <div style="clear:left"></div>
+      </div>
+      </div>
+    </script>
+    <script type="text/template" id="broadcast-tpl">
+      <div class="BubbleContainer BroadcastContainer">
+        <div class="TextArea">
+          <h3 class="Title"></h3>
+          <p class="Time"></p>
+          <div style="clear:both"></div>
+          <p class="Text"></p>
+          <p class="Author"></p>
+          <div style="clear:right"></div>
+        </div>
+      </div>
+    </script>
   </body>
-
 </html>
